@@ -29,6 +29,7 @@ package se.bitcraze.crazyfliecontrol.controller;
 
 import se.bitcraze.crazyfliecontrol2.MainActivity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -46,15 +47,18 @@ import com.MobileAnarchy.Android.Widgets.Joystick.JoystickView;
  */
 public class GyroscopeController extends TouchController {
 
+
     private SensorManager mSensorManager;
     private Sensor mSensor = null;
     private SensorEventListener mSeListener = null;
+
 
     private float mSensorRoll = 0;
     private float mSensorPitch = 0;
     private float mSensorYaw = 0;
     private float mSensorYawZero = 0;
     private boolean yawZeroSet = false;
+    public static boolean useGyroYaw = false;
 
     public GyroscopeController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {
         super(controls, activity, joystickviewLeft, joystickviewRight);
@@ -186,11 +190,17 @@ public class GyroscopeController extends TouchController {
             yawZeroSet = true;
             Log.d("YAW", "zero" + Float.toString(mSensorYawZero));
         }
-        float yaw = mSensorYaw - mSensorYawZero;
-        //yaw = (mControls.getMode() == 1 || mControls.getMode() == 2) ? mControls.getRightAnalog_X() : mControls.getLeftAnalog_X();
-        yaw = (float) Math.min(1.0, Math.max(-1, yaw+mControls.getYawTrim()));
-        //Log.d("YAW", "yaw return:" + (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw));
-        return (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw);
-    }
+        //useGyroYaw = mSharedPreferences.getBoolean("pref_use_gyro_yaw_bool", false);
+        if(useGyroYaw){
+            float yaw = mSensorYaw - mSensorYawZero;
+            yaw = (float) Math.min(1.0, Math.max(-1, yaw+mControls.getYawTrim()));
+            return (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw);
+        } else {
+            float yaw = 0;
+            yaw = (mControls.getMode() == 1 || mControls.getMode() == 2) ? mControls.getRightAnalog_X() : mControls.getLeftAnalog_X();
+            return yaw * mControls.getYawFactor() * mControls.getDeadzone(yaw);
+        }
 
+        //Log.d("YAW", "yaw return:" + (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw));
+    }
 }

@@ -85,6 +85,7 @@ public class PreferencesActivity extends PreferenceActivity {
 
     public static final String KEY_PREF_CONTROLLER = "pref_controller";
     public static final String KEY_PREF_USE_GYRO_BOOL = "pref_use_gyro_bool";
+    public static final String KEY_PREF_USE_GYRO_YAW_BOOL = "pref_use_gyro_yaw_bool";
     public static final String KEY_PREF_GYRO_AMP = "pref_gyro_amp";
     public static final String KEY_PREF_BTN_SCREEN = "pref_btn_screen";
     public static final String KEY_PREF_TOUCH_THRUST_FULL_TRAVEL = "pref_touch_thrust_full_travel";
@@ -524,6 +525,7 @@ public class PreferencesActivity extends PreferenceActivity {
             if (!mNoGyroSensor) {
                 findPreference(KEY_PREF_USE_GYRO_BOOL).setEnabled(controllerIndex == 0);
                 findPreference(KEY_PREF_GYRO_AMP).setEnabled(controllerIndex == 0 && useGyro);
+                findPreference(KEY_PREF_USE_GYRO_YAW_BOOL).setEnabled(controllerIndex == 0 && useGyro);
             }
             findPreference(KEY_PREF_BTN_SCREEN).setEnabled(controllerIndex == 1);
             findPreference(KEY_PREF_TOUCH_THRUST_FULL_TRAVEL).setEnabled(controllerIndex == 0);

@@ -378,6 +378,7 @@ public class MainActivity extends Activity {
         super.onResume();
         //TODO: improve
         PreferencesActivity.setDefaultJoystickSize(this);
+        GyroscopeController.useGyroYaw = mPreferences.getBoolean("pref_use_gyro_yaw_bool", false);
         mJoystickViewLeft.setPreferences(mPreferences);
         mJoystickViewRight.setPreferences(mPreferences);
         mControls.setControlConfig();
