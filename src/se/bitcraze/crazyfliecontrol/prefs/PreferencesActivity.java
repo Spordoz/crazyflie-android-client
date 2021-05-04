@@ -397,6 +397,9 @@ public class PreferencesActivity extends PreferenceActivity {
 
                 SliderPreference gyroAmp = (SliderPreference) findPreference(KEY_PREF_GYRO_AMP);
                 gyroAmp.setEnabled(useGyro);
+                CheckBoxPreference yawBool = (CheckBoxPreference) findPreference(KEY_PREF_USE_GYRO_YAW_BOOL);
+                yawBool.setEnabled(useGyro);
+
             }
 
             if (key.equals(KEY_PREF_GYRO_AMP)) {

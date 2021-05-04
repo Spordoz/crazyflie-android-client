@@ -25,6 +25,7 @@ import se.bitcraze.crazyfliecontrol.ble.BleLink;
 import se.bitcraze.crazyfliecontrol.console.ConsoleListener;
 import se.bitcraze.crazyfliecontrol.controller.AbstractController;
 import se.bitcraze.crazyfliecontrol.controller.GamepadController;
+import se.bitcraze.crazyfliecontrol.controller.GyroscopeController;
 import se.bitcraze.crazyfliecontrol.controller.IController;
 
 public class MainPresenter {
@@ -78,6 +79,7 @@ public class MainPresenter {
             } else {
                 mainActivity.setConnectionButtonConnected();
             }
+            GyroscopeController.setYawZero();
         }
 
         @Override

@@ -55,9 +55,9 @@ public class GyroscopeController extends TouchController {
 
     private float mSensorRoll = 0;
     private float mSensorPitch = 0;
-    private float mSensorYaw = 0;
-    private float mSensorYawZero = 0;
-    private boolean yawZeroSet = false;
+    private static float mSensorYaw = 0;
+    private static float mSensorYawZero = 0;
+    //private boolean yawZeroSet = false;
     public static boolean useGyroYaw = false;
 
     public GyroscopeController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {
@@ -183,13 +183,15 @@ public class GyroscopeController extends TouchController {
         return (pitch + mControls.getPitchTrim()) * mControls.getRollPitchFactor() * mControls.getDeadzone(pitch);
     }
 
+    public static void setYawZero(){
+        //if (!yawZeroSet) {
+        mSensorYawZero = mSensorYaw;
+        //yawZeroSet = true;
+        Log.d("YAW", "zero" + Float.toString(mSensorYawZero));
+        //}
+    }
     // map Yaw to the second touch pad
     public float getYaw() {
-        if (!yawZeroSet){
-            mSensorYawZero = mSensorYaw;
-            yawZeroSet = true;
-            Log.d("YAW", "zero" + Float.toString(mSensorYawZero));
-        }
         //useGyroYaw = mSharedPreferences.getBoolean("pref_use_gyro_yaw_bool", false);
         if(useGyroYaw){
             float yaw = mSensorYaw - mSensorYawZero;
