@@ -90,6 +90,15 @@
             android:key="pref_pitchtrim"
             android:title="@string/preferences_pitchtrim" />
 
+        <se.bitcraze.crazyfliecontrol.prefs.SliderPreference
+            custom:upperLimit=".5"
+            custom:lowerLimit="-.5"
+            custom:steps="50"
+            android:defaultValue="@string/preferences_trim_defaultValue"
+            android:dialogTitle="@string/preferences_yawtrim"
+            android:key="pref_pitchtrim"
+            android:title="@string/preferences_yawtrim" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_afc_bool"

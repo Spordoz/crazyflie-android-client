@@ -49,6 +49,14 @@ public class FlightDataView extends LinearLayout {
     private TextView mTextView_thrust;
     private TextView mTextView_yaw;
 
+
+    private TextView mTextView_pitch_sensor;
+    private TextView mTextView_roll_sensor;
+    private TextView mTextView_thrust_sensor;
+    private TextView mTextView_yaw_sensor;
+
+
+
     public FlightDataView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -76,6 +84,7 @@ public class FlightDataView extends LinearLayout {
         mTextView_pitch.setText(format(R.string.pitch, round(pitch)));
         mTextView_roll.setText(format(R.string.roll, round(roll)));
         mTextView_thrust.setText(format(R.string.thrust, round(thrust)));
+        //Log.d("YAW", Float.toString(yaw));
         mTextView_yaw.setText(format(R.string.yaw, round(yaw)));
     }
 
@@ -92,6 +101,13 @@ public class FlightDataView extends LinearLayout {
             Log.e(LOG_TAG, "unrounded: " + unrounded + ", NumberFormatException: " + nfe);
             return Double.NaN;
         }
+    }
+
+    public void UpdateSensorData(float sPitch, float sRoll, float sThrust, float sYaw){
+        mTextView_pitch_sensor.setText(format(R.string.pitch, round(sPitch)));
+        mTextView_roll_sensor.setText(format(R.string.roll, round(sRoll)));
+        mTextView_thrust_sensor.setText(format(R.string.thrust, round(sThrust)));
+        mTextView_yaw_sensor.setText(format(R.string.yaw, round(sYaw)));
     }
 
 }

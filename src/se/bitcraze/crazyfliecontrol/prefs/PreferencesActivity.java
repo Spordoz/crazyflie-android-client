@@ -73,6 +73,7 @@ public class PreferencesActivity extends PreferenceActivity {
     public static final String KEY_PREF_DEADZONE = "pref_deadzone";
     public static final String KEY_PREF_ROLLTRIM = "pref_rolltrim";
     public static final String KEY_PREF_PITCHTRIM = "pref_pitchtrim";
+    public static final String KEY_PREF_YAWTRIM = "pref_yawtrim";
     public static final String KEY_PREF_AFC_BOOL = "pref_afc_bool";
     public static final String KEY_PREF_AFC_SCREEN = "pref_afc_screen";
     public static final String KEY_PREF_MAX_ROLLPITCH_ANGLE = "pref_maxrollpitchangle";
@@ -99,6 +100,8 @@ public class PreferencesActivity extends PreferenceActivity {
     public static final String KEY_PREF_ROLLTRIM_MINUS_BTN = "pref_rolltrim_minus_btn";
     public static final String KEY_PREF_PITCHTRIM_PLUS_BTN = "pref_pitchtrim_plus_btn";
     public static final String KEY_PREF_PITCHTRIM_MINUS_BTN = "pref_pitchtrim_minus_btn";
+    public static final String KEY_PREF_YAWTRIM_PLUS_BTN = "pref_pitchtrim_plus_btn";
+    public static final String KEY_PREF_YAWTRIM_MINUS_BTN = "pref_pitchtrim_minus_btn";
     public static final String KEY_PREF_RESET_BTN = "pref_reset_btn";
     public static final String KEY_PREF_ALT1_BTN = "pref_alt1_btn";
     public static final String KEY_PREF_ALT1_ACTION = "pref_alt1_action";
@@ -151,6 +154,8 @@ public class PreferencesActivity extends PreferenceActivity {
         private String mRollTrimMinusBtnDefaultValue;
         private String mPitchTrimPlusBtnDefaultValue;
         private String mPitchTrimMinusBtnDefaultValue;
+        private String mYawTrimPlusBtnDefaultValue;
+        private String mYawTrimMinusBtnDefaultValue;
         private String mAlt1BtnDefaultValue;
         private String mAlt2BtnDefaultValue;
         private String mHoverBtnDefaultValue;
@@ -232,6 +237,8 @@ public class PreferencesActivity extends PreferenceActivity {
             mRollTrimMinusBtnDefaultValue = setInitialSummaryAndReturnDefaultValue(KEY_PREF_ROLLTRIM_MINUS_BTN, R.string.preferences_rolltrim_minus_btn_defaultValue);
             mPitchTrimPlusBtnDefaultValue = setInitialSummaryAndReturnDefaultValue(KEY_PREF_PITCHTRIM_PLUS_BTN, R.string.preferences_pitchtrim_plus_btn_defaultValue);
             mPitchTrimMinusBtnDefaultValue = setInitialSummaryAndReturnDefaultValue(KEY_PREF_PITCHTRIM_MINUS_BTN, R.string.preferences_pitchtrim_minus_btn_defaultValue);
+            mYawTrimPlusBtnDefaultValue = setInitialSummaryAndReturnDefaultValue(KEY_PREF_YAWTRIM_PLUS_BTN, R.string.preferences_yawtrim_plus_btn_defaultValue);
+            mYawTrimMinusBtnDefaultValue = setInitialSummaryAndReturnDefaultValue(KEY_PREF_YAWTRIM_MINUS_BTN, R.string.preferences_yawtrim_minus_btn_defaultValue);
             mAlt1BtnDefaultValue = setInitialSummaryAndReturnDefaultValue(KEY_PREF_ALT1_BTN, R.string.preferences_alt1_btn_defaultValue);
             setSummaryArrayString(KEY_PREF_ALT1_ACTION, R.string.preferences_alt1_action_defaultValue, R.array.actionEntries, R.array.actionValues);
             mAlt2BtnDefaultValue = setInitialSummaryAndReturnDefaultValue(KEY_PREF_ALT2_BTN, R.string.preferences_alt2_btn_defaultValue);
@@ -440,6 +447,12 @@ public class PreferencesActivity extends PreferenceActivity {
             }
             if (key.equals(KEY_PREF_PITCHTRIM_MINUS_BTN)) {
                 findPreference(key).setSummary(sharedPreferences.getString(key, mPitchTrimMinusBtnDefaultValue));
+            }
+            if (key.equals(KEY_PREF_PITCHTRIM_PLUS_BTN)) {
+                findPreference(key).setSummary(sharedPreferences.getString(key, mYawTrimPlusBtnDefaultValue));
+            }
+            if (key.equals(KEY_PREF_PITCHTRIM_MINUS_BTN)) {
+                findPreference(key).setSummary(sharedPreferences.getString(key, mYawTrimMinusBtnDefaultValue));
             }
             if (key.equals(KEY_PREF_ALT1_BTN)) {
                 findPreference(key).setSummary(sharedPreferences.getString(key, mAlt1BtnDefaultValue));

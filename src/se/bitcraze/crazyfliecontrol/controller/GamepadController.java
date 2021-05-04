@@ -62,6 +62,8 @@ public class GamepadController extends AbstractController {
     private int mRollTrimMinusBtn;
     private int mPitchTrimPlusBtn;
     private int mPitchTrimMinusBtn;
+    private int mYawTrimPlusBtn;
+    private int mYawTrimMinusBtn;
     private int mAlt1Btn;
     private int mAlt2Btn;
     private int mHoverBtn;
@@ -146,6 +148,10 @@ public class GamepadController extends AbstractController {
                 mControls.increaseTrim(PreferencesActivity.KEY_PREF_PITCHTRIM);
             } else if (event.getKeyCode() == mPitchTrimMinusBtn) {
                 mControls.decreaseTrim(PreferencesActivity.KEY_PREF_PITCHTRIM);
+            } else if (event.getKeyCode() == mYawTrimPlusBtn) {
+                mControls.increaseTrim(PreferencesActivity.KEY_PREF_YAWTRIM);
+            } else if (event.getKeyCode() == mYawTrimMinusBtn) {
+                mControls.decreaseTrim(PreferencesActivity.KEY_PREF_YAWTRIM);
             } else if (event.getKeyCode() == mAlt1Btn) {
                 mActivity.getPresenter().runAltAction(mControls.getAlt1Action());
             } else if (event.getKeyCode() == mAlt2Btn) {
@@ -204,6 +210,8 @@ public class GamepadController extends AbstractController {
         this.mRollTrimMinusBtn = KeyEvent.keyCodeFromString(mPreferences.getString(PreferencesActivity.KEY_PREF_ROLLTRIM_MINUS_BTN, mRollTrimMinusBtnDefaultValue));
         this.mPitchTrimPlusBtn = KeyEvent.keyCodeFromString(mPreferences.getString(PreferencesActivity.KEY_PREF_PITCHTRIM_PLUS_BTN, mPitchTrimPlusBtnDefaultValue));
         this.mPitchTrimMinusBtn = KeyEvent.keyCodeFromString(mPreferences.getString(PreferencesActivity.KEY_PREF_PITCHTRIM_MINUS_BTN, mPitchTrimMinusBtnDefaultValue));
+        this.mYawTrimPlusBtn = KeyEvent.keyCodeFromString(mPreferences.getString(PreferencesActivity.KEY_PREF_YAWTRIM_PLUS_BTN, mPitchTrimPlusBtnDefaultValue));
+        this.mYawTrimMinusBtn = KeyEvent.keyCodeFromString(mPreferences.getString(PreferencesActivity.KEY_PREF_YAWTRIM_MINUS_BTN, mPitchTrimMinusBtnDefaultValue));
         this.mAlt1Btn = KeyEvent.keyCodeFromString(mPreferences.getString(PreferencesActivity.KEY_PREF_ALT1_BTN, mAlt1BtnDefaultValue));
         this.mAlt2Btn = KeyEvent.keyCodeFromString(mPreferences.getString(PreferencesActivity.KEY_PREF_ALT2_BTN, mAlt2BtnDefaultValue));
         this.mHoverBtn = KeyEvent.keyCodeFromString(mPreferences.getString(PreferencesActivity.KEY_PREF_HOVER_BTN, mHoverBtnDefaultValue));

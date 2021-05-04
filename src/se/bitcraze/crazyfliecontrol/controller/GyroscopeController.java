@@ -52,6 +52,9 @@ public class GyroscopeController extends TouchController {
 
     private float mSensorRoll = 0;
     private float mSensorPitch = 0;
+    private float mSensorYaw = 0;
+    private float mSensorYawZero = 0;
+    private boolean yawZeroSet = false;
 
     public GyroscopeController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {
         super(controls, activity, joystickviewLeft, joystickviewRight);
@@ -82,6 +85,7 @@ public class GyroscopeController extends TouchController {
     public void disable() {
         mSensorRoll = 0;
         mSensorPitch = 0;
+        mSensorYaw = 0;
         if (mSeListener != null) {
             mSensorManager.unregisterListener(mSeListener);
         }
@@ -106,6 +110,7 @@ public class GyroscopeController extends TouchController {
             float d = (float) Math.max(Math.sqrt(event.values[0] * event.values[0] + event.values[1] * event.values[1] + event.values[2] * event.values[2]),0.001);
             mSensorPitch = event.values[0] / d * -1f * AMPLIFICATION;
             mSensorRoll = event.values[1] / d * AMPLIFICATION;
+            mSensorYaw = event.values[2] / d * AMPLIFICATION;
             updateFlightData();
         }
     }
@@ -146,9 +151,13 @@ public class GyroscopeController extends TouchController {
         SensorManager.getOrientation(adjustedRotationMatrix, orientation);
         float pitch = (orientation[2] * FROM_RADS_TO_DEGS * -1) / AMPLIFICATION;
         float roll = (orientation[1] * FROM_RADS_TO_DEGS) / AMPLIFICATION;
+        float yaw = (orientation[0] * FROM_RADS_TO_DEGS * -1) / AMPLIFICATION;
         mSensorRoll = roll;
         mSensorPitch = pitch;
+        mSensorYaw = yaw;
+        //Log.d("YAW", Float.toString(yaw));
         updateFlightData();
+
     }
 
     // overwrite getRoll() and getPitch() to only use values from gyro sensors
@@ -172,9 +181,16 @@ public class GyroscopeController extends TouchController {
 
     // map Yaw to the second touch pad
     public float getYaw() {
-        float yaw = 0;
-        yaw = (mControls.getMode() == 1 || mControls.getMode() == 2) ? mControls.getRightAnalog_X() : mControls.getLeftAnalog_X();
-        return yaw * mControls.getYawFactor() * mControls.getDeadzone(yaw);
+        if (!yawZeroSet){
+            mSensorYawZero = mSensorYaw;
+            yawZeroSet = true;
+            Log.d("YAW", "zero" + Float.toString(mSensorYawZero));
+        }
+        float yaw = mSensorYaw - mSensorYawZero;
+        //yaw = (mControls.getMode() == 1 || mControls.getMode() == 2) ? mControls.getRightAnalog_X() : mControls.getLeftAnalog_X();
+        yaw = (float) Math.min(1.0, Math.max(-1, yaw+mControls.getYawTrim()));
+        //Log.d("YAW", "yaw return:" + (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw));
+        return (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw);
     }
 
 }

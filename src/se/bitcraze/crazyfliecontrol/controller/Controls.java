@@ -56,6 +56,7 @@ public class Controls {
     private static final float TRIM_INCREMENTS = 0.02f;
     private float mRollTrim;
     private float mPitchTrim;
+    private float mYawTrim;
     private String mTrimDefaultValue;
 
     private int mMode; // Controller axis mapping (Mode 1-4)
@@ -123,6 +124,7 @@ public class Controls {
 
         this.mRollTrim = Float.parseFloat(mPreferences.getString(PreferencesActivity.KEY_PREF_ROLLTRIM, mTrimDefaultValue));
         this.mPitchTrim = Float.parseFloat(mPreferences.getString(PreferencesActivity.KEY_PREF_PITCHTRIM, mTrimDefaultValue));
+        this.mYawTrim = Float.parseFloat(mPreferences.getString(PreferencesActivity.KEY_PREF_YAWTRIM, mTrimDefaultValue));
 
         this.mControllerType = Integer.parseInt(mPreferences.getString(PreferencesActivity.KEY_PREF_CONTROLLER, mControllerTypeDefaultValue));
 
@@ -157,6 +159,8 @@ public class Controls {
     public float getPitchTrim() {
         return mPitchTrim;
     }
+
+    public float getYawTrim() { return mYawTrim; }
 
     public void increaseTrim(String prefKey) {
         changeTrim(prefKey, true);
@@ -317,4 +321,6 @@ public class Controls {
         }
         return addThrust;
     }
+
+
 }

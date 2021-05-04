@@ -5,6 +5,9 @@
     android:versionName="0.7.3" >
 
     <uses-feature
+        android:name="android.hardware"
+        android:required="true" />
+    <uses-feature
         android:name="android.hardware.usb.host"
         android:required="false" />
 

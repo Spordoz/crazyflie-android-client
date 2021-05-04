@@ -122,10 +122,12 @@ public class MainActivity extends Activity {
     private TextView mTextView_linkQuality;
     private MainPresenter mPresenter;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         mPresenter = new MainPresenter(this);
 
@@ -174,7 +176,10 @@ public class MainActivity extends Activity {
         initializeSounds();
 
         setCacheDir();
+
     }
+
+
 
     private void initializeSounds() {
         this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -267,6 +272,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
               Intent intent = new Intent(MainActivity.this, PreferencesActivity.class);
               startActivity(intent);
+
             }
         });
     }
@@ -498,6 +504,7 @@ public class MainActivity extends Activity {
     //TODO: fix indirection
     public void updateFlightData(){
         mFlightDataView.updateFlightData(mController.getPitch(), mController.getRoll(), mController.getThrust(), mController.getYaw());
+
     }
 
     public void appendToConsole(String text) {
@@ -540,6 +547,7 @@ public class MainActivity extends Activity {
         }
         return super.dispatchKeyEvent(event);
     }
+
 
     // this workaround is necessary because DPad buttons are not considered to be "Gamepad buttons"
     private static boolean isJoystickButton(int keyCode) {
@@ -713,6 +721,7 @@ public class MainActivity extends Activity {
 
     public void setConnectionButtonConnected() {
         setConnectionButtonBackground(R.drawable.custom_button_connected);
+
     }
 
     public void setConnectionButtonConnectedBle() {
