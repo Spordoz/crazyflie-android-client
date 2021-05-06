@@ -27,6 +27,8 @@
 
 package se.bitcraze.crazyfliecontrol.controller;
 
+import android.util.Log;
+
 import se.bitcraze.crazyfliecontrol2.MainActivity;
 
 import com.MobileAnarchy.Android.Widgets.Joystick.JoystickMovedListener;
@@ -57,7 +59,7 @@ public class TouchController extends AbstractController {
     }
 
     private void updateAutoReturnMode() {
-        this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_BOTTOM : JoystickView.AUTO_RETURN_CENTER);
+        this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_NONE : JoystickView.AUTO_RETURN_CENTER);
         this.mJoystickViewLeft.autoReturn(true);
         this.mJoystickViewRight.setAutoReturnMode(isRightAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_BOTTOM : JoystickView.AUTO_RETURN_CENTER);
         this.mJoystickViewRight.autoReturn(true);
@@ -97,19 +99,23 @@ public class TouchController extends AbstractController {
 
             mControls.setRightAnalogX(pan);
 
+            GyroscopeController.YawButtonPressed = true;
+            GyroscopeController.setYawZero();
+
             updateFlightData();
         }
 
         @Override
         public void OnReleased() {
+            GyroscopeController.YawButtonPressed = false;
             // Log.i("Joystick-Right", "Release");
-            mControls.setRightAnalogY(0);
+            //mControls.setRightAnalogY(0);
             mControls.setRightAnalogX(0);
         }
 
         public void OnReturnedToCenter() {
             // Log.i("Joystick-Right", "Center");
-            mControls.setRightAnalogY(0);
+            //mControls.setRightAnalogY(0);
             mControls.setRightAnalogX(0);
         }
     };

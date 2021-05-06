@@ -58,6 +58,7 @@ public class GyroscopeController extends TouchController {
     private static float mSensorYaw = 0;
     private static float mSensorYawZero = 0;
     //private boolean yawZeroSet = false;
+    public static boolean YawButtonPressed = false;
     public static boolean useGyroYaw = false;
 
     public GyroscopeController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {
@@ -144,7 +145,7 @@ public class GyroscopeController extends TouchController {
 
     private void update(float[] vectors) {
         int AMP_MAX = 50;
-        int AMPLIFICATION = AMP_MAX / mControls.getGyroAmplification();
+        float AMPLIFICATION = AMP_MAX / mControls.getGyroAmplification();
         float[] rotationMatrix = new float[9];
         SensorManager.getRotationMatrixFromVector(rotationMatrix, vectors);
         int worldAxisX = SensorManager.AXIS_X;
@@ -192,17 +193,18 @@ public class GyroscopeController extends TouchController {
     }
     // map Yaw to the second touch pad
     public float getYaw() {
-        //useGyroYaw = mSharedPreferences.getBoolean("pref_use_gyro_yaw_bool", false);
         if(useGyroYaw){
-            float yaw = mSensorYaw - mSensorYawZero;
-            yaw = (float) Math.min(1.0, Math.max(-1, yaw+mControls.getYawTrim()));
-            return (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw);
+            if(YawButtonPressed){
+                float yaw = mSensorYaw - mSensorYawZero;
+                yaw = (float) Math.min(1.0, Math.max(-1, yaw+mControls.getYawTrim()));
+                return (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw);
+            }
         } else {
             float yaw = 0;
             yaw = (mControls.getMode() == 1 || mControls.getMode() == 2) ? mControls.getRightAnalog_X() : mControls.getLeftAnalog_X();
             return yaw * mControls.getYawFactor() * mControls.getDeadzone(yaw);
         }
-
         //Log.d("YAW", "yaw return:" + (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw));
+        return 0;
     }
 }
