@@ -99,16 +99,20 @@ public class TouchController extends AbstractController {
 
             mControls.setRightAnalogX(pan);
 
-            GyroscopeController.YawButtonPressed = true;
-            GyroscopeController.setYawZero();
+            /*if(!GyroscopeController.YawButtonPressed){
+                GyroscopeController.setYawZero();
+            }
+            GyroscopeController.YawButtonPressed = true;*/
+            Log.d("Joystick-Right", Boolean.toString(GyroscopeController.yawButtonPressed));
 
             updateFlightData();
         }
 
         @Override
         public void OnReleased() {
-            GyroscopeController.YawButtonPressed = false;
-            // Log.i("Joystick-Right", "Release");
+            GyroscopeController.yawButtonPressed = false;
+            Log.i("Joystick-Right", "Release");
+            Log.d("Joystick-Right", Boolean.toString(GyroscopeController.yawButtonPressed));
             //mControls.setRightAnalogY(0);
             mControls.setRightAnalogX(0);
         }

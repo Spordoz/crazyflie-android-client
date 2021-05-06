@@ -11,6 +11,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
+import se.bitcraze.crazyfliecontrol.controller.GyroscopeController;
 import se.bitcraze.crazyfliecontrol.prefs.PreferencesActivity;
 
 public class JoystickView extends View {
@@ -279,6 +280,11 @@ public class JoystickView extends View {
         final int action = ev.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_MOVE: {
+            if(!GyroscopeController.yawButtonPressed){
+                GyroscopeController.setYawZero();}
+            if(autoReturnMode != AUTO_RETURN_NONE){
+                GyroscopeController.yawButtonPressed = true;
+            }
             return processMoveEvent(ev);
         }
         case MotionEvent.ACTION_CANCEL:

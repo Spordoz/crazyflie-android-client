@@ -58,7 +58,8 @@ public class GyroscopeController extends TouchController {
     private static float mSensorYaw = 0;
     private static float mSensorYawZero = 0;
     //private boolean yawZeroSet = false;
-    public static boolean YawButtonPressed = false;
+    public static boolean yawButtonPressed = false;
+    public static boolean onlyYawOnPressed = false;
     public static boolean useGyroYaw = false;
 
     public GyroscopeController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {
@@ -193,10 +194,19 @@ public class GyroscopeController extends TouchController {
     }
     // map Yaw to the second touch pad
     public float getYaw() {
+        Log.d("Joystick-Right", "bool press only: " + Boolean.toString(onlyYawOnPressed));
         if(useGyroYaw){
-            if(YawButtonPressed){
+            if(onlyYawOnPressed) {
+                if (yawButtonPressed) {
+                    float yaw = mSensorYaw - mSensorYawZero;
+                    yaw = (float) Math.min(1.0, Math.max(-1, yaw + mControls.getYawTrim()));
+                    return (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw);
+                } else {
+                    return 0;
+                }
+            } else{
                 float yaw = mSensorYaw - mSensorYawZero;
-                yaw = (float) Math.min(1.0, Math.max(-1, yaw+mControls.getYawTrim()));
+                yaw = (float) Math.min(1.0, Math.max(-1, yaw + mControls.getYawTrim()));
                 return (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw);
             }
         } else {
@@ -205,6 +215,5 @@ public class GyroscopeController extends TouchController {
             return yaw * mControls.getYawFactor() * mControls.getDeadzone(yaw);
         }
         //Log.d("YAW", "yaw return:" + (yaw + mControls.getYawTrim()) * mControls.getYawFactor() * mControls.getDeadzone(yaw));
-        return 0;
     }
 }

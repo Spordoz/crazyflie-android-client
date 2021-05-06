@@ -78,6 +78,9 @@
     <string name="preferences_use_gyro_yaw_bool_summary_on">Use gyroscope sensors for yaw</string>
     <string name="preferences_use_gyro_yaw_bool_summary_off">Do not use gyroscope sensors for yaw</string>
     <string name="preferences_use_gyro_yaw_bool_title">Use experimental yaw gyroscope sensor</string>
+    <string name="preferences_use_gyro_yaw_on_press_bool_summary_on">Only register yaw on press</string>
+    <string name="preferences_use_gyro_yaw_on_press_bool_summary_off">Always register yaw</string>
+    <string name="preferences_use_gyro_yaw_on_press_bool_title">Only register yaw changes while pressing right joystick</string>
     <string name="preferences_gyro_amp_title">Gyroscope amplification</string>
     <string name="preferences_gyro_amp_summary">Choose gyroscope amplification</string>
     <string name="preferences_gyro_amp_defaultValue">2</string>

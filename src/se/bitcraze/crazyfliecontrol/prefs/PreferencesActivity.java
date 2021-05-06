@@ -86,6 +86,7 @@ public class PreferencesActivity extends PreferenceActivity {
     public static final String KEY_PREF_CONTROLLER = "pref_controller";
     public static final String KEY_PREF_USE_GYRO_BOOL = "pref_use_gyro_bool";
     public static final String KEY_PREF_USE_GYRO_YAW_BOOL = "pref_use_gyro_yaw_bool";
+    public static final String KEY_PREF_USE_GYRO_YAW_ON_PRESS_BOOL = "pref_use_gyro_yaw_on_press_bool";
     public static final String KEY_PREF_GYRO_AMP = "pref_gyro_amp";
     public static final String KEY_PREF_BTN_SCREEN = "pref_btn_screen";
     public static final String KEY_PREF_TOUCH_THRUST_FULL_TRAVEL = "pref_touch_thrust_full_travel";
@@ -377,6 +378,14 @@ public class PreferencesActivity extends PreferenceActivity {
             if (key.equals(KEY_PREF_CONTROLLER)) {
                 setSummaryArray(key, R.string.preferences_controller_defaultValue, R.array.controllerEntries, 0);
                 setControllerSpecificPreferences();
+            }
+
+            if (key.equals(KEY_PREF_USE_GYRO_YAW_BOOL)) {
+                CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
+                boolean useGyroOnPress = sharedPreferences.getBoolean(KEY_PREF_USE_GYRO_YAW_BOOL, false);
+                pref.setChecked(useGyroOnPress);
+                CheckBoxPreference yawPressBool = (CheckBoxPreference) findPreference(KEY_PREF_USE_GYRO_YAW_ON_PRESS_BOOL);
+                yawPressBool.setEnabled(useGyroOnPress);
             }
 
             if (key.equals(KEY_PREF_USE_GYRO_BOOL)) {
