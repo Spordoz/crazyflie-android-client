@@ -258,24 +258,10 @@
             android:summaryOn="@string/preferences_use_gyro_bool_summary_on"
             android:title="@string/preferences_use_gyro_bool_title" />
 
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="pref_use_gyro_yaw_bool"
-            android:summaryOff="@string/preferences_use_gyro_yaw_bool_summary_off"
-            android:summaryOn="@string/preferences_use_gyro_yaw_bool_summary_on"
-            android:title="@string/preferences_use_gyro_yaw_bool_title" />
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="pref_use_gyro_yaw_on_press_bool"
-            android:summaryOff="@string/preferences_use_gyro_yaw_on_press_bool_summary_off"
-            android:summaryOn="@string/preferences_use_gyro_yaw_on_press_bool_summary_on"
-            android:title="@string/preferences_use_gyro_yaw_on_press_bool_title" />
-
         <se.bitcraze.crazyfliecontrol.prefs.SliderPreference
-            custom:lowerLimit="1"
-            custom:upperLimit="10"
-            custom:wholeNumber="true"
+            custom:lowerLimit="0.5"
+            custom:upperLimit="4"
+            custom:steps="8"
             android:defaultValue="@string/preferences_gyro_amp_defaultValue"
             android:key="pref_gyro_amp"
             android:title="@string/preferences_gyro_amp_title"/>
@@ -287,11 +273,42 @@
             android:summaryOn="@string/preferences_touch_thrust_full_travel_summary_on"
             android:title="@string/preferences_touch_thrust_full_travel" />
 
+
+
         <se.bitcraze.crazyfliecontrol.prefs.SliderPreference
             android:key="pref_touch_slider_size"
             android:title="@string/preferences_joystick_size_title"
             custom:lowerLimit="10"
             custom:wholeNumber="true"/>
+
+        <!-- Experimental features screen -->
+
+        <PreferenceScreen
+            android:key="pref_exp_feat"
+            android:title="@string/preferences_experimental_features_title">
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="pref_touch_thrust_sticky"
+                android:summaryOff="@string/preferences_touch_thrust_sticky_summary_off"
+                android:summaryOn="@string/preferences_touch_thrust_sticky_summary_on"
+                android:title="@string/preferences_touch_thrust_sticky" />
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="pref_use_gyro_yaw_bool"
+                android:summaryOff="@string/preferences_use_gyro_yaw_bool_summary_off"
+                android:summaryOn="@string/preferences_use_gyro_yaw_bool_summary_on"
+                android:title="@string/preferences_use_gyro_yaw_bool_title" />
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="pref_use_gyro_yaw_on_press_bool"
+                android:summaryOff="@string/preferences_use_gyro_yaw_on_press_bool_summary_off"
+                android:summaryOn="@string/preferences_use_gyro_yaw_on_press_bool_summary_on"
+                android:title="@string/preferences_use_gyro_yaw_on_press_bool_title" />
+
+        </PreferenceScreen>
+
 
     </PreferenceScreen>
 
