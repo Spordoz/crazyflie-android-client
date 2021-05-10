@@ -57,6 +57,8 @@ public class GyroscopeController extends TouchController {
     private float mSensorPitch = 0;
     private static float mSensorYaw = 0;
     private static float mSensorYawZero = 0;
+    //private float mSensorPitchZero = 0;
+    private float lastThrust = 0;
     //private boolean yawZeroSet = false;
     public static boolean yawButtonPressed = false;
     public static boolean onlyYawOnPressed = false;
@@ -166,6 +168,22 @@ public class GyroscopeController extends TouchController {
 
     }
 
+    public float getThrust() {
+        float thrust =  ((mControls.getMode() == 1 || mControls.getMode() == 3) ? mControls.getRightAnalog_Y() : mControls.getLeftAnalog_Y()) * 1.5f;
+        if (Math.abs(thrust) > mControls.getDeadzone()) {
+            thrust += lastThrust;
+            Log.d("JoystickView", "thrust: " + Float.toString(thrust));
+            if(thrust > mControls.getMaxThrust()){
+                thrust = mControls.getMaxThrust();
+            } else if(thrust < 0){
+                thrust = 0;
+            }
+            lastThrust = thrust;
+            return thrust;
+        }
+        return lastThrust;
+    }
+
     // overwrite getRoll() and getPitch() to only use values from gyro sensors
     public float getRoll() {
         float roll = mSensorRoll;
@@ -192,6 +210,15 @@ public class GyroscopeController extends TouchController {
         Log.d("YAW", "zero" + Float.toString(mSensorYawZero));
         //}
     }
+
+//    public static void setPitchZero(){
+//        //if (!yawZeroSet) {
+//        mSensorPitchZero = mSensorPitch;
+//        //yawZeroSet = true;
+//        Log.d("YAW", "zero" + Float.toString(mSensorYawZero));
+//        //}
+//    }
+
     // map Yaw to the second touch pad
     public float getYaw() {
         Log.d("Joystick-Right", "bool press only: " + Boolean.toString(onlyYawOnPressed));

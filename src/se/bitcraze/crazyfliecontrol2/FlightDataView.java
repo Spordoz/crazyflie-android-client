@@ -103,11 +103,4 @@ public class FlightDataView extends LinearLayout {
         }
     }
 
-    public void UpdateSensorData(float sPitch, float sRoll, float sThrust, float sYaw){
-        mTextView_pitch_sensor.setText(format(R.string.pitch, round(sPitch)));
-        mTextView_roll_sensor.setText(format(R.string.roll, round(sRoll)));
-        mTextView_thrust_sensor.setText(format(R.string.thrust, round(sThrust)));
-        mTextView_yaw_sensor.setText(format(R.string.yaw, round(sYaw)));
-    }
-
 }

@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import se.bitcraze.crazyfliecontrol.controller.GyroscopeController;
+import se.bitcraze.crazyfliecontrol.controller.TouchController;
 import se.bitcraze.crazyfliecontrol.prefs.PreferencesActivity;
 
 public class JoystickView extends View {
@@ -19,6 +20,8 @@ public class JoystickView extends View {
     private static final String TAG = "JoystickView";
 
     private boolean isLeft = true;
+
+    private boolean firstTouch = true;
 
     private Paint bgPaint;
     private Paint handlePaint;
@@ -55,6 +58,7 @@ public class JoystickView extends View {
     // Last touch point in view coordinates
     private int pointerId = INVALID_POINTER_ID;
     private float touchX, touchY;
+    private float touchXzero, touchYzero = 0;
 
     // Last reported position in view coordinates (allows different reporting sensitivities)
     private float reportX, reportY;
@@ -293,6 +297,8 @@ public class JoystickView extends View {
                 // Log.d(TAG, "ACTION_UP");
                 autoReturn(false);
                 setPointerId(INVALID_POINTER_ID);
+                moveListener.OnReleased();
+                firstTouch = true;
             }
             break;
         }
@@ -304,6 +310,7 @@ public class JoystickView extends View {
                     // Log.d(TAG, "ACTION_POINTER_UP: " + pointerId);
                     autoReturn(false);
                     setPointerId(INVALID_POINTER_ID);
+                    //firstTouch = true;
                     return true;
                 }
             }
@@ -339,6 +346,18 @@ public class JoystickView extends View {
         return false;
     }
 
+    private void getZeroOnTouch (){
+        if(TouchController.stickyThrust) {
+            if (firstTouch) {
+                Log.d(TAG, "first touch");
+                calcUserCoordinates();
+                touchXzero = userX;
+                touchYzero = userY;
+                firstTouch = false;
+            }
+        }
+    }
+
     private boolean processMoveEvent(MotionEvent ev) {
         if (pointerId != INVALID_POINTER_ID) {
             final int pointerIndex = ev.findPointerIndex(pointerId);
@@ -348,6 +367,8 @@ public class JoystickView extends View {
             touchX = x - circleCenterX;
             float y = ev.getY(pointerIndex);
             touchY = y - circleCenterY;
+            getZeroOnTouch();
+
 
             // Log.d(TAG, String.format("ACTION_MOVE: (%03.0f, %03.0f) => (%03.0f, %03.0f)", x, y, touchX, touchY));
             reportOnMoved();
@@ -364,6 +385,7 @@ public class JoystickView extends View {
             constrainBox();
         }
         calcUserCoordinates();
+
         if (moveListener != null) {
             boolean rx = Math.abs(touchX - reportX) >= moveResolution;
             boolean ry = Math.abs(touchY - reportY) >= moveResolution;
@@ -371,8 +393,9 @@ public class JoystickView extends View {
                 this.reportX = touchX;
                 this.reportY = touchY;
 
-                // Log.d(TAG, String.format("moveListener.OnMoved(%d,%d)", (int)userX, (int)userY));
-                moveListener.OnMoved(userX, userY);
+                Log.d(TAG, String.format("moveListener.OnMoved(%d,%d)", (int)(userX-touchXzero), (int)(userY-touchYzero)));
+                Log.d(TAG, Boolean.toString(firstTouch));
+                moveListener.OnMoved(userX-touchXzero, userY-touchYzero);
             }
         }
     }
