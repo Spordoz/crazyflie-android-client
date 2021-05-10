@@ -380,6 +380,7 @@ public class MainActivity extends Activity {
         PreferencesActivity.setDefaultJoystickSize(this);
         GyroscopeController.useGyroYaw = mPreferences.getBoolean("pref_use_gyro_yaw_bool", false);
         GyroscopeController.onlyYawOnPressed = mPreferences.getBoolean("pref_use_gyro_yaw_on_press_bool", false);
+        TouchController.stickyThrust = mPreferences.getBoolean("pref_touch_thrust_sticky", false);
         mJoystickViewLeft.setPreferences(mPreferences);
         mJoystickViewRight.setPreferences(mPreferences);
         mControls.setControlConfig();

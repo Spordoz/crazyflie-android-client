@@ -87,9 +87,13 @@
     <string name="preferences_touch_thrust_full_travel">Use full travel for thrust</string>
     <string name="preferences_touch_thrust_full_travel_summary_on">On the touch controller, use the full travel from bottom to top to control thrust</string>
     <string name="preferences_touch_thrust_full_travel_summary_off">On the touch controller, use the travel from center to top to control thrust</string>
+    <string name="preferences_touch_thrust_sticky">Thrust stays in place on release</string>
+    <string name="preferences_touch_thrust_sticky_summary_on">On the touch controller, the thrust will keep its value upon release instead of returning to 0</string>
+    <string name="preferences_touch_thrust_sticky_summary_off">On the touch controller, thrust will return to 0 upon release</string>
     <string name="preferences_joystick_size_title">Virtual joystick size (%)</string>
     <string name="preferences_joystick_size_defaultValue">80</string>
     <string name="preferences_btn_title">Gamepad axis and button mapping</string>
+    <string name="preferences_experimental_features_title">Experimental features</string>
     <string name="preferences_category_axes">Axes</string>
     <string name="preferences_right_analog_x_axis_title">Right analog X axis</string>
     <string name="preferences_right_analog_x_axis_defaultValue">AXIS_Z</string>

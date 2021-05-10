@@ -90,6 +90,7 @@ public class PreferencesActivity extends PreferenceActivity {
     public static final String KEY_PREF_GYRO_AMP = "pref_gyro_amp";
     public static final String KEY_PREF_BTN_SCREEN = "pref_btn_screen";
     public static final String KEY_PREF_TOUCH_THRUST_FULL_TRAVEL = "pref_touch_thrust_full_travel";
+    public static final String KEY_PREF_TOUCH_THRUST_STICKY = "pref_touch_thrust_sticky";
     public static final String KEY_PREF_RIGHT_ANALOG_X_AXIS = "pref_right_analog_x_axis";
     public static final String KEY_PREF_RIGHT_ANALOG_Y_AXIS = "pref_right_analog_y_axis";
     public static final String KEY_PREF_LEFT_ANALOG_X_AXIS = "pref_left_analog_x_axis";
@@ -534,10 +535,12 @@ public class PreferencesActivity extends PreferenceActivity {
             String controllerDefaultValue = getResources().getString(R.string.preferences_controller_defaultValue);
             int controllerIndex = Integer.parseInt(mSharedPreferences.getString(KEY_PREF_CONTROLLER, controllerDefaultValue));
             boolean useGyro = mSharedPreferences.getBoolean(KEY_PREF_USE_GYRO_BOOL, false);
+            boolean useYaw = mSharedPreferences.getBoolean(KEY_PREF_USE_GYRO_YAW_BOOL, false);
             if (!mNoGyroSensor) {
                 findPreference(KEY_PREF_USE_GYRO_BOOL).setEnabled(controllerIndex == 0);
                 findPreference(KEY_PREF_GYRO_AMP).setEnabled(controllerIndex == 0 && useGyro);
                 findPreference(KEY_PREF_USE_GYRO_YAW_BOOL).setEnabled(controllerIndex == 0 && useGyro);
+                findPreference(KEY_PREF_USE_GYRO_YAW_ON_PRESS_BOOL).setEnabled(controllerIndex == 0 && useYaw);
             }
             findPreference(KEY_PREF_BTN_SCREEN).setEnabled(controllerIndex == 1);
             findPreference(KEY_PREF_TOUCH_THRUST_FULL_TRAVEL).setEnabled(controllerIndex == 0);

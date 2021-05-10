@@ -49,6 +49,8 @@ public class TouchController extends AbstractController {
     protected JoystickView mJoystickViewLeft;
     protected JoystickView mJoystickViewRight;
 
+    public static boolean stickyThrust = false;
+
     public TouchController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {
         super(controls, activity);
         this.mJoystickViewLeft = joystickviewLeft;
@@ -59,7 +61,11 @@ public class TouchController extends AbstractController {
     }
 
     private void updateAutoReturnMode() {
-        this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_NONE : JoystickView.AUTO_RETURN_CENTER);
+        if(stickyThrust){
+            this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_NONE : JoystickView.AUTO_RETURN_CENTER);
+        } else {
+            this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_BOTTOM : JoystickView.AUTO_RETURN_CENTER);
+        }
         this.mJoystickViewLeft.autoReturn(true);
         this.mJoystickViewRight.setAutoReturnMode(isRightAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_BOTTOM : JoystickView.AUTO_RETURN_CENTER);
         this.mJoystickViewRight.autoReturn(true);
@@ -119,7 +125,7 @@ public class TouchController extends AbstractController {
 
         public void OnReturnedToCenter() {
             // Log.i("Joystick-Right", "Center");
-            //mControls.setRightAnalogY(0);
+            mControls.setRightAnalogY(0);
             mControls.setRightAnalogX(0);
         }
     };
@@ -129,13 +135,20 @@ public class TouchController extends AbstractController {
         @Override
         public void OnMoved(float pan, float tilt) {
             if (isLeftAnalogFullTravelThrust()) {
-                tilt = (tilt + 1.0f) / 2.0f;
+                if(!stickyThrust){
+                    tilt = (tilt + 1.0f) / 2.0f;
+                }
             }
+            Log.d("JoystickView", Float.toString(tilt));
             mControls.setLeftAnalogY(tilt);
 
             mControls.setLeftAnalogX(pan);
 
             updateFlightData();
+
+            if(stickyThrust){
+                OnReleased();
+            }
         }
 
         @Override
