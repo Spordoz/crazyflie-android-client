@@ -22,6 +22,8 @@ public class JoystickView extends View {
     private boolean isLeft = true;
 
     private boolean firstTouch = true;
+    private float lastYInput = 0;
+    public boolean capInput = false;
 
     private Paint bgPaint;
     private Paint handlePaint;
@@ -297,7 +299,10 @@ public class JoystickView extends View {
                 // Log.d(TAG, "ACTION_UP");
                 autoReturn(false);
                 setPointerId(INVALID_POINTER_ID);
-                moveListener.OnReleased();
+                if(!capInput){
+                    lastYInput = lastYInput + userY - touchYzero;
+                }
+                //moveListener.OnReleased();
                 firstTouch = true;
             }
             break;
@@ -393,9 +398,9 @@ public class JoystickView extends View {
                 this.reportX = touchX;
                 this.reportY = touchY;
 
-                Log.d(TAG, String.format("moveListener.OnMoved(%d,%d)", (int)(userX-touchXzero), (int)(userY-touchYzero)));
+                Log.d(TAG, "X: " + Float.toString(userX-touchXzero) + " Y: " + Float.toString(userY-touchYzero) + " LastInput: " + Float.toString(lastYInput) + " UserY: " + Float.toString(userY) + " TouchYzero: " + Float.toString(touchYzero));
                 Log.d(TAG, Boolean.toString(firstTouch));
-                moveListener.OnMoved(userX-touchXzero, userY-touchYzero);
+                moveListener.OnMoved(userX-touchXzero, lastYInput+(userY-touchYzero));
             }
         }
     }
