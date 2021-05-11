@@ -400,7 +400,13 @@ public class JoystickView extends View {
 
                 Log.d(TAG, "X: " + Float.toString(userX-touchXzero) + " Y: " + Float.toString(userY-touchYzero) + " LastInput: " + Float.toString(lastYInput) + " UserY: " + Float.toString(userY) + " TouchYzero: " + Float.toString(touchYzero));
                 Log.d(TAG, Boolean.toString(firstTouch));
-                moveListener.OnMoved(userX-touchXzero, lastYInput+(userY-touchYzero));
+                if(userY <= -0.95) {
+                    moveListener.OnMoved(userX - touchXzero, -1);
+                    lastYInput = 0;
+                } else {
+                    moveListener.OnMoved(userX-touchXzero, lastYInput+(userY-touchYzero));
+                }
+
             }
         }
     }
