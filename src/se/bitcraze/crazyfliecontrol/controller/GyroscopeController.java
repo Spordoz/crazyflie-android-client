@@ -58,8 +58,7 @@ public class GyroscopeController extends TouchController {
     private static float mSensorYaw = 0;
     private static float mSensorYawZero = 0;
     //private float mSensorPitchZero = 0;
-    private float lastThrust = 0;
-    private float lastInput = 0;
+
     //private boolean yawZeroSet = false;
     public static boolean yawButtonPressed = false;
     public static boolean onlyYawOnPressed = false;
@@ -169,33 +168,7 @@ public class GyroscopeController extends TouchController {
 
     }
 
-    public float getThrust() {
-        float thrust =  ((mControls.getMode() == 1 || mControls.getMode() == 3) ? mControls.getRightAnalog_Y() : mControls.getLeftAnalog_Y());
-        JoystickView joystickView = (mControls.getMode() == 1 || mControls.getMode() == 3) ? mJoystickViewRight : mJoystickViewLeft;
-        if (Math.abs(thrust) > mControls.getDeadzone()) {
-            thrust -= mControls.getDeadzone();
-            Log.d("JoystickView", "thrust before: " + Float.toString(thrust));
-            lastInput = thrust;
-            if(mControls.getMinThrust() + (thrust * mControls.getThrustFactor()) > mControls.getMaxThrust()){
-                lastThrust = mControls.getMaxThrust();
-                joystickView.capInput = true;
-                return mControls.getMaxThrust();
-            } else if(mControls.getMinThrust() + (thrust * mControls.getThrustFactor()) < mControls.getMinThrust()){
-                lastThrust = 0;
-                joystickView.capInput = true;
-                return 0;
-            }
-            joystickView.capInput = false;
-            Log.d("JoystickView", "thrust: " + Float.toString(thrust));
-            lastThrust = mControls.getMinThrust() + (thrust * mControls.getThrustFactor());
-            return lastThrust;
 
-
-//            lastThrust = thrust;
-//            return thrust;
-        }
-        return lastThrust;
-    }
 
     // overwrite getRoll() and getPitch() to only use values from gyro sensors
     public float getRoll() {

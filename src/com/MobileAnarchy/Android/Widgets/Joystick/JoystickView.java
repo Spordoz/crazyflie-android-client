@@ -372,8 +372,9 @@ public class JoystickView extends View {
             touchX = x - circleCenterX;
             float y = ev.getY(pointerIndex);
             touchY = y - circleCenterY;
-            getZeroOnTouch();
-
+            if(TouchController.stickyThrust){
+                getZeroOnTouch();
+            }
 
             // Log.d(TAG, String.format("ACTION_MOVE: (%03.0f, %03.0f) => (%03.0f, %03.0f)", x, y, touchX, touchY));
             reportOnMoved();
@@ -398,15 +399,18 @@ public class JoystickView extends View {
                 this.reportX = touchX;
                 this.reportY = touchY;
 
-                Log.d(TAG, "X: " + Float.toString(userX-touchXzero) + " Y: " + Float.toString(userY-touchYzero) + " LastInput: " + Float.toString(lastYInput) + " UserY: " + Float.toString(userY) + " TouchYzero: " + Float.toString(touchYzero));
-                Log.d(TAG, Boolean.toString(firstTouch));
-                if(userY <= -0.95) {
-                    moveListener.OnMoved(userX - touchXzero, -1);
-                    lastYInput = 0;
+                if(!TouchController.stickyThrust){
+                    moveListener.OnMoved(userX, userY);
                 } else {
-                    moveListener.OnMoved(userX-touchXzero, lastYInput+(userY-touchYzero));
+                    Log.d(TAG, "X: " + Float.toString(userX - touchXzero) + " Y: " + Float.toString(userY - touchYzero) + " LastInput: " + Float.toString(lastYInput) + " UserY: " + Float.toString(userY) + " TouchYzero: " + Float.toString(touchYzero));
+                    Log.d(TAG, Boolean.toString(firstTouch));
+                    if (userY <= -0.95) {
+                        moveListener.OnMoved(userX - touchXzero, -1);
+                        lastYInput = 0;
+                    } else {
+                        moveListener.OnMoved(userX - touchXzero, lastYInput + (userY - touchYzero));
+                    }
                 }
-
             }
         }
     }

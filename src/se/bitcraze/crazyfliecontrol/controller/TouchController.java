@@ -49,7 +49,46 @@ public class TouchController extends AbstractController {
     protected JoystickView mJoystickViewLeft;
     protected JoystickView mJoystickViewRight;
 
+    private float lastThrust = 0;
+    private float lastInput = 0;
+
     public static boolean stickyThrust = false;
+
+    public float getThrust() {
+        float thrust =  ((mControls.getMode() == 1 || mControls.getMode() == 3) ? mControls.getRightAnalog_Y() : mControls.getLeftAnalog_Y());
+        JoystickView joystickView = (mControls.getMode() == 1 || mControls.getMode() == 3) ? mJoystickViewRight : mJoystickViewLeft;
+        if(!stickyThrust){
+            if (thrust > mControls.getDeadzone()) {
+                Log.d("JoystickView", "Thrust: " + thrust);
+                //thrust -= mControls.getDeadzone();
+                Log.d("JoystickView", "Thrust after: " + thrust);
+                Log.d("JoystickView", "Thrust final: " + (mControls.getMinThrust() + (thrust - 1 * mControls.getDeadzone())/(1 - mControls.getDeadzone()) * mControls.getThrustFactor()));
+                return (float) (mControls.getMinThrust() + (thrust - 1 * mControls.getDeadzone())/(1 - mControls.getDeadzone()) * mControls.getThrustFactor());
+            } else {
+                return 0;
+            }
+        } else {
+            if (Math.abs(thrust) > mControls.getDeadzone()) {
+                thrust -= mControls.getDeadzone();
+                Log.d("JoystickView", "thrust before: " + Float.toString(thrust));
+                lastInput = thrust;
+                if (mControls.getMinThrust() + (thrust * mControls.getThrustFactor()) > mControls.getMaxThrust()) {
+                    lastThrust = mControls.getMaxThrust();
+                    joystickView.capInput = true;
+                    return mControls.getMaxThrust();
+                } else if (mControls.getMinThrust() + (thrust * mControls.getThrustFactor()) < mControls.getMinThrust()) {
+                    lastThrust = 0;
+                    joystickView.capInput = true;
+                    return 0;
+                }
+                joystickView.capInput = false;
+                Log.d("JoystickView", "thrust: " + Float.toString(thrust));
+                lastThrust = mControls.getMinThrust() + (thrust * mControls.getThrustFactor());
+                return lastThrust;
+            }
+            return lastThrust;
+        }
+    }
 
     public TouchController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {
         super(controls, activity);
