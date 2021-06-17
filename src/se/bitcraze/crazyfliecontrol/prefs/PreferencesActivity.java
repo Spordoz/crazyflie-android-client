@@ -87,6 +87,7 @@ public class PreferencesActivity extends PreferenceActivity {
     public static final String KEY_PREF_USE_GYRO_BOOL = "pref_use_gyro_bool";
     public static final String KEY_PREF_USE_GYRO_YAW_BOOL = "pref_use_gyro_yaw_bool";
     public static final String KEY_PREF_USE_GYRO_YAW_ON_PRESS_BOOL = "pref_use_gyro_yaw_on_press_bool";
+    public static final String KEY_PREF_USE_FULL_ASSIST_BOOL = "pref_use_full_assisted_mode";
     public static final String KEY_PREF_GYRO_AMP = "pref_gyro_amp";
     public static final String KEY_PREF_BTN_SCREEN = "pref_btn_screen";
     public static final String KEY_PREF_TOUCH_THRUST_FULL_TRAVEL = "pref_touch_thrust_full_travel";
@@ -389,10 +390,11 @@ public class PreferencesActivity extends PreferenceActivity {
                 yawPressBool.setEnabled(useGyroOnPress);
             }
 
+
             if (key.equals(KEY_PREF_USE_GYRO_BOOL)) {
                 CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
                 boolean useGyro = sharedPreferences.getBoolean(key, false);
-                pref.setChecked(useGyro);
+                pref.setChecked(sharedPreferences.getBoolean(key, false));
                 // automatically activate the screen rotation lock preference
                 CheckBoxPreference screenRotationLock = (CheckBoxPreference) findPreference(KEY_PREF_SCREEN_ROTATION_LOCK_BOOL);
                 if (useGyro) {
@@ -409,7 +411,11 @@ public class PreferencesActivity extends PreferenceActivity {
                 gyroAmp.setEnabled(useGyro);
                 CheckBoxPreference yawBool = (CheckBoxPreference) findPreference(KEY_PREF_USE_GYRO_YAW_BOOL);
                 yawBool.setEnabled(useGyro);
+            }
 
+            if(key.equals(KEY_PREF_USE_FULL_ASSIST_BOOL)){
+                CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
+                pref.setChecked(sharedPreferences.getBoolean(key, false));
             }
 
             if (key.equals(KEY_PREF_GYRO_AMP)) {
@@ -536,6 +542,7 @@ public class PreferencesActivity extends PreferenceActivity {
             int controllerIndex = Integer.parseInt(mSharedPreferences.getString(KEY_PREF_CONTROLLER, controllerDefaultValue));
             boolean useGyro = mSharedPreferences.getBoolean(KEY_PREF_USE_GYRO_BOOL, false);
             boolean useYaw = mSharedPreferences.getBoolean(KEY_PREF_USE_GYRO_YAW_BOOL, false);
+            boolean full_assist_bool = mSharedPreferences.getBoolean(KEY_PREF_USE_FULL_ASSIST_BOOL, false);
             if (!mNoGyroSensor) {
                 findPreference(KEY_PREF_USE_GYRO_BOOL).setEnabled(controllerIndex == 0);
                 findPreference(KEY_PREF_GYRO_AMP).setEnabled(controllerIndex == 0 && useGyro);

@@ -116,6 +116,9 @@ public class MainActivity extends Activity {
     private ImageButton mRingEffectButton;
     private ImageButton mHeadlightButton;
     private ImageButton mBuzzerSoundButton;
+    private ImageButton mAssistModeButton;
+    private ImageButton mHoverUpButton;
+    private ImageButton mHoverDownButton;
     private File mCacheDir;
 
     private TextView mTextView_battery;
@@ -166,6 +169,9 @@ public class MainActivity extends Activity {
         mRingEffectButton = (ImageButton) findViewById(R.id.button_ledRing);
         mHeadlightButton = (ImageButton) findViewById(R.id.button_headLight);
         mBuzzerSoundButton = (ImageButton) findViewById(R.id.button_buzzerSound);
+        mAssistModeButton = (ImageButton) findViewById(R.id.button_assistMode);
+        mHoverUpButton = (ImageButton) findViewById(R.id.hoverUp);
+        mHoverDownButton = (ImageButton) findViewById(R.id.hoverDown);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(this.getPackageName()+".USB_PERMISSION");
@@ -388,6 +394,7 @@ public class MainActivity extends Activity {
         resetInputMethod();
         checkScreenLock();
         checkConsole();
+        CheckAssistModusUI();
         //disable action buttons
         mRingEffectButton.setEnabled(false);
         mHeadlightButton.setEnabled(false);
@@ -635,6 +642,70 @@ public class MainActivity extends Activity {
         if (mLoaded) {
             float volume = 1.0f;
             mSoundPool.play(sound, volume, volume, 1, 0, 1f);
+        }
+    }
+
+    public void CheckAssistModusUI(){
+        boolean useAssistUI = mPreferences.getBoolean(PreferencesActivity.KEY_PREF_USE_FULL_ASSIST_BOOL, false);
+        if(useAssistUI) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mHoverUpButton.setVisibility(View.VISIBLE);
+                    mHoverDownButton.setVisibility(View.VISIBLE);
+                    mJoystickViewLeft.setVisibility(View.GONE);
+                    mHoverUpButton.setEnabled(true);
+                    mHoverDownButton.setEnabled(true);
+                    mJoystickViewLeft.setEnabled(false);
+
+                }
+            });
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mHoverUpButton.setVisibility(View.GONE);
+                    mHoverDownButton.setVisibility(View.GONE);
+                    mJoystickViewLeft.setVisibility(View.VISIBLE);
+                    mHoverUpButton.setEnabled(false);
+                    mHoverDownButton.setEnabled(false);
+                    mJoystickViewLeft.setEnabled(true);
+                }
+            });
+        }
+    }
+
+    public void setActiveAssistButton(Boolean bool){
+        if(bool) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAssistModeButton.setVisibility(View.VISIBLE);
+                    mAssistModeButton.setEnabled(true);
+                }
+            });
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAssistModeButton.setVisibility(View.GONE);
+                    mAssistModeButton.setEnabled(false);
+                }
+            });
+        }
+    }
+
+    // extra method for onClick attribute in XML
+    public void hoverUp(View view){
+        if(mPresenter != null && mController instanceof TouchController) {
+            TouchController.mHover = true;
+
+        }
+    }
+
+    public void hoverDown(View view){
+        if(mPresenter != null) {
+
         }
     }
 

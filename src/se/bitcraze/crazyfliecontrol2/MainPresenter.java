@@ -27,6 +27,9 @@ import se.bitcraze.crazyfliecontrol.controller.AbstractController;
 import se.bitcraze.crazyfliecontrol.controller.GamepadController;
 import se.bitcraze.crazyfliecontrol.controller.GyroscopeController;
 import se.bitcraze.crazyfliecontrol.controller.IController;
+import se.bitcraze.crazyfliecontrol.controller.TouchController;
+
+import static android.view.View.GONE;
 
 public class MainPresenter {
 
@@ -94,6 +97,7 @@ public class MainPresenter {
                     checkForBuzzerDeck();
                     checkForNoOfRingEffects();
                     checkForZRanger();
+                    checkForController();
                 }
             }
             mLogg = mCrazyflie.getLogg();
@@ -184,6 +188,14 @@ public class MainPresenter {
             }
         });
         mCrazyflie.getParam().requestParamUpdate("ring.neffect");
+    }
+
+    private void checkForController(){
+        if(mainActivity.getController() instanceof GamepadController) {
+            mainActivity.setActiveAssistButton(false);
+        } else {
+            mainActivity.setActiveAssistButton(true);
+        }
     }
 
     private void sendPacket(CrtpPacket packet) {
@@ -325,7 +337,10 @@ public class MainPresenter {
         } else {
 //                Log.i(LOG_TAG, "flightmode.althold: getThrust(): " + mController.getThrustAbsolute());
             Log.d("debug", "flightmode.althold: " + hover);
-            mCrazyflie.setParamValueBle("flightmode.althold", hover ? 1 : 0, VariableType.UINT8_T);
+            if(mParamToc.getTocSize() > 0)
+                mCrazyflie.setParamValue("flightmode.althold", hover ? 1 : 0);
+            else
+                mCrazyflie.setParamValueBle("flightmode.althold", hover ? 1 : 0, VariableType.UINT8_T);
         }
     }
 
@@ -354,11 +369,11 @@ public class MainPresenter {
             }
             else if ("althold.enable".equalsIgnoreCase(action)){
                 Log.d("debug", "flightmode.althold: altAction functioncall \n");
+                if(mHeightHoldToggle != TouchController.mHover)
+                    mHeightHoldToggle = TouchController.mHover;
                 mHeightHoldToggle = !mHeightHoldToggle;
-                if(mParamToc.getTocSize() > 0)
-                    enableAltHoldMode(mHeightHoldToggle);
-                else
-                    touchEnableAltHoldMode(mHeightHoldToggle);
+                touchEnableAltHoldMode(mHeightHoldToggle);
+                TouchController.mHover = mHeightHoldToggle;
             }
         } else {
             Log.d(LOG_TAG, "runAltAction - crazyflie is null");

@@ -94,6 +94,9 @@
     <string name="preferences_joystick_size_defaultValue">80</string>
     <string name="preferences_btn_title">Gamepad axis and button mapping</string>
     <string name="preferences_experimental_features_title">Experimental features</string>
+    <string name="preferences_use_use_full_assisted_mode_off">Use thrust control to control height</string>
+    <string name="preferences_use_full_assisted_mode_on">Use velocity control to control height</string>
+    <string name="preferences_use_full_assisted_mode_title">Full assisted mode</string>
     <string name="preferences_category_axes">Axes</string>
     <string name="preferences_right_analog_x_axis_title">Right analog X axis</string>
     <string name="preferences_right_analog_x_axis_defaultValue">AXIS_Z</string>

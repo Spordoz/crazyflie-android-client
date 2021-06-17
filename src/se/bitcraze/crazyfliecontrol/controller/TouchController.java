@@ -53,11 +53,18 @@ public class TouchController extends AbstractController {
     private float lastInput = 0;
 
     public static boolean stickyThrust = false;
+    public static boolean mHover = false;
 
     public float getThrust() {
         float thrust =  ((mControls.getMode() == 1 || mControls.getMode() == 3) ? mControls.getRightAnalog_Y() : mControls.getLeftAnalog_Y());
         JoystickView joystickView = (mControls.getMode() == 1 || mControls.getMode() == 3) ? mJoystickViewRight : mJoystickViewLeft;
-        if(!stickyThrust){
+        if (isHover() && mControls.getDeadzone(thrust) == 1) {
+            float minThrust = mControls.getMinThrust();
+            if (thrust < 0) {
+                minThrust = minThrust * -1;
+            }
+            return minThrust + (thrust * mControls.getThrustFactor());
+        } else if(!stickyThrust) {
             if (thrust > mControls.getDeadzone()) {
                 Log.d("JoystickView", "Thrust: " + thrust);
                 //thrust -= mControls.getDeadzone();
@@ -88,6 +95,25 @@ public class TouchController extends AbstractController {
             }
             return lastThrust;
         }
+    }
+
+    public float getThrustAbsolute() {
+        float thrust = getThrust();
+        float absThrust = thrust/100 * MAX_THRUST;
+
+        //Hacky Hover Mode
+        if(isHover()) {
+            return 32767 + ((absThrust/65535)*32767);
+        } else {
+            if(thrust > 0) {
+                return absThrust;
+            }
+        }
+        return 0;
+    }
+
+    public boolean isHover() {
+        return this.mHover;
     }
 
     public TouchController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {

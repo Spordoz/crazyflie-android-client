@@ -307,6 +307,13 @@
                 android:summaryOn="@string/preferences_use_gyro_yaw_on_press_bool_summary_on"
                 android:title="@string/preferences_use_gyro_yaw_on_press_bool_title" />
 
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="pref_use_full_assisted_mode"
+                android:summaryOff="@string/preferences_use_use_full_assisted_mode_off"
+                android:summaryOn="@string/preferences_use_full_assisted_mode_on"
+                android:title="@string/preferences_use_full_assisted_mode_title" />
+
         </PreferenceScreen>
 
 
