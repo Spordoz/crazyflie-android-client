@@ -43,6 +43,7 @@ public enum VariableType {
     INT16_T (2),
     INT32_T (4),
     INT64_T (8),
+    FP16(2),
     FLOAT (4),
     DOUBLE (8);
 
@@ -139,6 +140,7 @@ public enum VariableType {
                 tempBuffer8.putLong(value.longValue());
                 tempBuffer8.rewind();
                 return tempBuffer8.array();
+            case FP16:
             case FLOAT:
                 tempBuffer4.putFloat(value.floatValue());
                 break;
@@ -160,5 +162,37 @@ public enum VariableType {
             mLogger.warn("UINT64_T not yet implemented");
         }
         return this.mSize;
+    }
+
+    public byte getTypeCode() {
+        switch (this) {
+            case UINT8_T:
+                return 0x08;
+            case UINT16_T:
+                return 0x09;
+            case UINT32_T:
+                return 0x0A;
+            case UINT64_T:
+                return 0x0B;
+            case INT8_T:
+                return 0x00;
+            case INT16_T:
+                return 0x01;
+            case INT32_T:
+                return 0x02;
+            case INT64_T:
+                return 0x03;
+            case FP16:
+                return 0x05;
+            case FLOAT:
+                return 0x06;
+            case DOUBLE:
+                return 0x07;
+            default:
+                // TODO: throw exception
+                mLogger.warn("Parsing " + this.name() + " is not yet implemented");
+                break;
+        }
+        return -1;
     }
 }

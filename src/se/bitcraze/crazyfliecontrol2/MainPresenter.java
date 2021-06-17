@@ -45,6 +45,7 @@ public class MainPresenter {
 
     private boolean mHeadlightToggle = false;
     private boolean mSoundToggle = false;
+    private boolean mHeightHoldToggle = false;
     private int mRingEffect = 0;
     private int mNoRingEffect = 0;
     private int mCpuFlash = 0;
@@ -314,10 +315,25 @@ public class MainPresenter {
         }
     }
 
+    public void touchEnableAltHoldMode(boolean hover) {
+        if (isZrangerAvailable) {
+            heightHold = hover;
+            // reset target height, when hover is deactivated
+            if (!hover) {
+                ((GamepadController) mainActivity.getController()).setTargetHeight(AbstractController.INITIAL_TARGET_HEIGHT);
+            }
+        } else {
+//                Log.i(LOG_TAG, "flightmode.althold: getThrust(): " + mController.getThrustAbsolute());
+            Log.d("debug", "flightmode.althold: " + hover);
+            mCrazyflie.setParamValueBle("flightmode.althold", hover ? 1 : 0, VariableType.UINT8_T);
+        }
+    }
+
     //TODO: make runAltAction more universal
     public void runAltAction(String action) {
-        Log.i(LOG_TAG, "runAltAction: " + action);
+        Log.i("debug", "runAltAction: " + action);
         if (mCrazyflie != null) {
+            Log.i("debug", "check \n");
             if ("ring.headlightEnable".equalsIgnoreCase(action)) {
                 // Toggle LED ring headlight
                 mHeadlightToggle = !mHeadlightToggle;
@@ -335,6 +351,14 @@ public class MainPresenter {
                 Log.i(LOG_TAG, "Sound effect: " + split[1]);
                 mCrazyflie.setParamValue(split[0], mSoundToggle ? Integer.parseInt(split[1]) : 0);
                 mSoundToggle = !mSoundToggle;
+            }
+            else if ("althold.enable".equalsIgnoreCase(action)){
+                Log.d("debug", "flightmode.althold: altAction functioncall \n");
+                mHeightHoldToggle = !mHeightHoldToggle;
+                if(mParamToc.getTocSize() > 0)
+                    enableAltHoldMode(mHeightHoldToggle);
+                else
+                    touchEnableAltHoldMode(mHeightHoldToggle);
             }
         } else {
             Log.d(LOG_TAG, "runAltAction - crazyflie is null");

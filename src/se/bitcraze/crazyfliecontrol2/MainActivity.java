@@ -639,6 +639,14 @@ public class MainActivity extends Activity {
     }
 
     // extra method for onClick attribute in XML
+    public void EnableAltHoldMode(View view){
+        if(mPresenter != null) {
+            Log.i("debug", "flightmode.althold: EnableAltHoldMode functioncall \n");
+            mPresenter.runAltAction("althold.enable");
+        }
+    }
+
+    // extra method for onClick attribute in XML
     public void switchLedRingEffect(View view) {
         if (mPresenter != null) {
             mPresenter.runAltAction("ring.effect");

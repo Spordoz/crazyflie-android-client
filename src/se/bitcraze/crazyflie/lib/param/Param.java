@@ -27,6 +27,8 @@
 
 package se.bitcraze.crazyflie.lib.param;
 
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +50,7 @@ import se.bitcraze.crazyflie.lib.toc.TocCache;
 import se.bitcraze.crazyflie.lib.toc.TocElement;
 import se.bitcraze.crazyflie.lib.toc.TocFetchFinishedListener;
 import se.bitcraze.crazyflie.lib.toc.TocFetcher;
+import se.bitcraze.crazyflie.lib.toc.VariableType;
 
 /**
  * Enables reading/writing of parameter values to/from the Crazyflie.
@@ -81,6 +84,7 @@ public class Param {
     private int TOC_CHANNEL = 0;
     private int READ_CHANNEL = 1;
     private int WRITE_CHANNEL = 2;
+    private int MISC_CHANNEL = 3;
 
     // TOC access command
     private int TOC_RESET = 0;
@@ -267,6 +271,46 @@ public class Param {
     }
 
     /**
+     * Set the value for the supplied parameter over BLE.
+     * Specific id is needed since BLE cannot get the TOC and thus cannot retrieve id from name
+     *
+     * @param completeName
+     * @param value
+     * @param cType
+     */
+
+    //FIXME: hacky way to set parameter if you know the id of said parameter
+    public void setValueBle(String completeName, Number value, VariableType cType){
+        byte[] groupBytes, nameBytes;
+        byte bytevalue;
+        Log.d("debug", "name: " + completeName + " value: " + value + " type: " + cType);
+        Header header = new Header(MISC_CHANNEL, CrtpPort.PARAMETERS);
+        String[] split = completeName.split("\\.");
+        groupBytes = split[0].getBytes();
+        nameBytes = split[1].getBytes();
+        //byte[] parse = cType.parse(value);
+        bytevalue = value.byteValue();
+        ByteBuffer bb = ByteBuffer.allocate(1 + groupBytes.length + nameBytes.length + 4);
+        bb.put((byte) 0x00);
+        for (int i = 0; i < groupBytes.length; i++){
+            bb.put(groupBytes[i]);
+        }
+        bb.put((byte) 0);
+        for (int i = 0; i < nameBytes.length; i++){
+            bb.put(nameBytes[i]);
+        }
+        bb.put((byte) 0);
+        bb.put(cType.getTypeCode());
+        bb.put(bytevalue);
+        Log.d("debug", "data: " + bb.array());
+        CrtpPacket packet = new CrtpPacket(header.getByte(), bb.array());
+        //self.param_updater.request_param_setvalue(pk)
+        Log.d("debug", "packet: " + packet);
+        mPut.addParamRequest(packet);
+
+    }
+
+    /**
      * Set the value for the supplied parameter.
      *
      * @param completeName
@@ -371,6 +415,7 @@ public class Param {
             try {
                 //TODO: is put() the right method?
                 mRequestQueue.put(packet);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

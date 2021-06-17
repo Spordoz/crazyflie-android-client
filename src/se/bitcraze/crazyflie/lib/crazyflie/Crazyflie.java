@@ -46,6 +46,7 @@ import se.bitcraze.crazyflie.lib.log.Logg;
 import se.bitcraze.crazyflie.lib.param.Param;
 import se.bitcraze.crazyflie.lib.toc.TocCache;
 import se.bitcraze.crazyflie.lib.toc.TocFetchFinishedListener;
+import se.bitcraze.crazyflie.lib.toc.VariableType;
 
 public class Crazyflie {
 
@@ -333,6 +334,12 @@ public class Crazyflie {
 
     public void clearTocCache() {
         mTocCache.clear();
+    }
+
+    public void setParamValueBle(String completeName, Number value, VariableType cType) {
+        if (mParam != null) {
+            mParam.setValueBle(completeName, value, cType);
+        }
     }
 
     public void setParamValue(String completeName, Number value) {
