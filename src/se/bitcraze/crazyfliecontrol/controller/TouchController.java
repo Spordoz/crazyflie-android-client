@@ -103,6 +103,7 @@ public class TouchController extends AbstractController {
 
         //Hacky Hover Mode
         if(isHover()) {
+            Log.d("debug", "sending hover values: " + (32767 + ((absThrust/65535)*32767)));
             return 32767 + ((absThrust/65535)*32767);
         } else {
             if(thrust > 0) {

@@ -402,6 +402,10 @@ public class MainActivity extends Activity {
         if (mPreferences.getBoolean(PreferencesActivity.KEY_PREF_IMMERSIVE_MODE_BOOL, false)) {
             setHideyBar();
         }
+        if(mPresenter != null){
+            mPresenter.setTakeoffBool(mPreferences.getBoolean(PreferencesActivity.KEY_PREF_TAKEOFF, false));
+        }
+
         //mJoystickViewLeft.requestLayout();
     }
 
@@ -709,11 +713,16 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void takeoff(){
+
+    }
+
     // extra method for onClick attribute in XML
-    public void EnableAltHoldMode(View view){
+    public void enableAltHoldMode(View view){
         if(mPresenter != null) {
             Log.i("debug", "flightmode.althold: EnableAltHoldMode functioncall \n");
             mPresenter.runAltAction("althold.enable");
+
         }
     }
 

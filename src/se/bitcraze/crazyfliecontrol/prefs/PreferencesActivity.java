@@ -83,6 +83,7 @@ public class PreferencesActivity extends PreferenceActivity {
     public static final String KEY_PREF_XMODE = "pref_xmode";
     public static final String KEY_PREF_RESET_AFC = "pref_reset_afc";
 
+    public static final String KEY_PREF_TAKEOFF = "pref_enable_takeoff";
     public static final String KEY_PREF_CONTROLLER = "pref_controller";
     public static final String KEY_PREF_USE_GYRO_BOOL = "pref_use_gyro_bool";
     public static final String KEY_PREF_USE_GYRO_YAW_BOOL = "pref_use_gyro_yaw_bool";
@@ -414,6 +415,16 @@ public class PreferencesActivity extends PreferenceActivity {
             }
 
             if(key.equals(KEY_PREF_USE_FULL_ASSIST_BOOL)){
+                CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
+                pref.setChecked(sharedPreferences.getBoolean(key, false));
+            }
+
+            if(key.equals(KEY_PREF_TOUCH_THRUST_STICKY)){
+                CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
+                pref.setChecked(sharedPreferences.getBoolean(key, false));
+            }
+
+            if(key.equals(KEY_PREF_TAKEOFF)){
                 CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
                 pref.setChecked(sharedPreferences.getBoolean(key, false));
             }

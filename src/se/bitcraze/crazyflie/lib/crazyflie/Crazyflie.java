@@ -27,6 +27,8 @@
 
 package se.bitcraze.crazyflie.lib.crazyflie;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -336,9 +338,9 @@ public class Crazyflie {
         mTocCache.clear();
     }
 
-    public void setParamValueBle(String completeName, Number value, VariableType cType) {
+    public void setParamValueBle(String completeName, Number value, VariableType cType, Boolean coreParameter) {
         if (mParam != null) {
-            mParam.setValueBle(completeName, value, cType);
+            mParam.setValueBle(completeName, value, cType, coreParameter);
         }
     }
 
@@ -408,6 +410,7 @@ public class Crazyflie {
                 if(packet != null) {
                     //All-packet callbacks
                     //self.cf.packet_received.call(pk)
+                    Log.d("debug",packet.getPayload().toString());
 
                     checkForInitialPacketCallback(packet);
                     checkReceivedPackets(packet);

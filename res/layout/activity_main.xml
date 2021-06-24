@@ -200,7 +200,7 @@
         android:layout_toEndOf="@+id/button_buzzerSound"
         android:layout_toRightOf="@+id/button_buzzerSound"
         android:background="@drawable/custom_button_action"
-        android:onClick="EnableAltHoldMode"
+        android:onClick="enableAltHoldMode"
         android:src="@android:drawable/ic_menu_compass" />
 
     <ImageButton

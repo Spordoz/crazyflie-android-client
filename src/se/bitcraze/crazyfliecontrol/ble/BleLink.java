@@ -387,9 +387,9 @@ public class BleLink extends CrtpDriver {
     @Override
     public void sendPacket(CrtpPacket packet) {
         // FIXME: Skipping half of the commander packets to avoid queuing up packets on slow BLE
-        if (!mWriteWithAnswer && ((ctr++)%2 == 0)) {
-            return;
-        }
+        //if (!mWriteWithAnswer && ((ctr++)%2 == 0)) {
+        //    return;
+        //}
         if (packet.getPayload().length <= 20) {
             //send normal CRTP packet
             mContext.runOnUiThread(new SendBlePacket(packet));
@@ -414,7 +414,7 @@ public class BleLink extends CrtpDriver {
         // controlbyte + payload (rest)
         byte[] secondPacket = new byte[20];
         secondPacket[0] = new ControlByte(false, pid, 0).toByte();
-        System.arraycopy(packet.getPayload(),19, secondPacket, 1, packet.getPayload().length-19);
+        System.arraycopy(packet.getPayload(),18, secondPacket, 1, packet.getPayload().length-19);
         // send second packet
         mContext.runOnUiThread(new SendBlePacket(secondPacket, mCrtpUpChar));
         pid = (pid+1)%4;

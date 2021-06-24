@@ -84,6 +84,7 @@ public class MainPresenter {
                 mainActivity.setConnectionButtonConnected();
             }
             GyroscopeController.setYawZero();
+            //TODO: set assist mode to false
         }
 
         @Override
@@ -311,6 +312,11 @@ public class MainPresenter {
         mainActivity.setLinkQualityText("N/A");
     }
 
+    public void setTakeoffBool(boolean bool){
+        if (mCrazyflie != null)
+            mCrazyflie.setParamValue("modes.takeoff", bool ? 1 : 0);
+    }
+
     public void enableAltHoldMode(boolean hover) {
         // For safety reasons, altHold mode is only supported when the Crazyradio and a game pad are used
         if (mCrazyflie != null && mCrazyflie.getDriver() instanceof RadioDriver && mainActivity.getController() instanceof GamepadController) {
@@ -336,11 +342,11 @@ public class MainPresenter {
             }
         } else {
 //                Log.i(LOG_TAG, "flightmode.althold: getThrust(): " + mController.getThrustAbsolute());
-            Log.d("debug", "flightmode.althold: " + hover);
+            Log.d("debug", "modes.althold: " + hover);
             if(mParamToc.getTocSize() > 0)
-                mCrazyflie.setParamValue("flightmode.althold", hover ? 1 : 0);
+                mCrazyflie.setParamValue("modes.althold", hover ? 1 : 0);
             else
-                mCrazyflie.setParamValueBle("flightmode.althold", hover ? 1 : 0, VariableType.UINT8_T);
+                mCrazyflie.setParamValueBle("modes.althold", hover ? 1 : 0, VariableType.UINT8_T, true);
         }
     }
 
