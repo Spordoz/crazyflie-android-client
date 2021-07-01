@@ -117,11 +117,11 @@ public class MainActivity extends Activity {
     private ImageButton mRingEffectButton;
     private ImageButton mHeadlightButton;
     private ImageButton mBuzzerSoundButton;
-    private ImageButton mAssistModeButton;
     private ImageButton mHoverUpButton;
     private ImageButton mHoverDownButton;
     private ImageButton mYawRightButton;
     private ImageButton mYawLeftButton;
+    private Button mAssistModeButton;
     private Button mTakeoffButton;
     private Button mLandButton;
     private Button mKillButton;
@@ -176,7 +176,7 @@ public class MainActivity extends Activity {
         mRingEffectButton = (ImageButton) findViewById(R.id.button_ledRing);
         mHeadlightButton = (ImageButton) findViewById(R.id.button_headLight);
         mBuzzerSoundButton = (ImageButton) findViewById(R.id.button_buzzerSound);
-        mAssistModeButton = (ImageButton) findViewById(R.id.button_assistMode);
+        mAssistModeButton = (Button) findViewById(R.id.assistMode_button);
         mHoverUpButton = (ImageButton) findViewById(R.id.hoverUp);
         mHoverDownButton = (ImageButton) findViewById(R.id.hoverDown);
         mYawRightButton = (ImageButton) findViewById(R.id.yawRight);
@@ -842,8 +842,13 @@ public class MainActivity extends Activity {
     // extra method for onClick attribute in XML
     public void enableAltHoldMode(View view){
         if(mPresenter != null) {
-            Log.i("debug", "flightmode.althold: EnableAltHoldMode functioncall \n");
             mPresenter.runAltAction("modes.althold");
+            if(TouchController.mHover){
+                mAssistModeButton.setText("Disable\n Assist Mode");
+            }
+            else {
+                mAssistModeButton.setText("Enable\n Assist Mode");
+            }
         }
     }
 

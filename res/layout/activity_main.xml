@@ -190,19 +190,22 @@
         android:layout_toRightOf="@+id/console_scrollView"
         android:gravity="bottom" />
 
-    <ImageButton
-        android:id="@+id/button_assistMode"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_below="@+id/imageButton_connect"
-        android:layout_marginStart="174dp"
-        android:layout_marginLeft="174dp"
-        android:layout_marginTop="39dp"
-        android:layout_toEndOf="@+id/button_buzzerSound"
-        android:layout_toRightOf="@+id/button_buzzerSound"
-        android:background="@drawable/custom_button_action"
+
+    <Button
+        android:id="@+id/assistMode_button"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_alignTop="@+id/button_buzzerSound"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="125dp"
+        android:layout_marginRight="125dp"
+        android:autoSizeMaxTextSize="15sp"
+        android:autoSizeMinTextSize="10sp"
+        android:autoSizeTextType="uniform"
         android:onClick="enableAltHoldMode"
-        android:src="@android:drawable/ic_menu_compass" />
+        android:text="Enable\n Assist Mode" />
 
     <ImageButton
         android:id="@+id/hoverUp"
