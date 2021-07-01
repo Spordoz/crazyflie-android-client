@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -352,7 +351,7 @@ public class JoystickView extends View {
     }
 
     private void getZeroOnTouch (){
-        if(TouchController.stickyThrust) {
+        if(TouchController.mStickyThrust) {
             if (firstTouch) {
                 Log.d(TAG, "first touch");
                 calcUserCoordinates();
@@ -372,7 +371,7 @@ public class JoystickView extends View {
             touchX = x - circleCenterX;
             float y = ev.getY(pointerIndex);
             touchY = y - circleCenterY;
-            if(TouchController.stickyThrust){
+            if(TouchController.mStickyThrust){
                 getZeroOnTouch();
             }
 
@@ -399,7 +398,7 @@ public class JoystickView extends View {
                 this.reportX = touchX;
                 this.reportY = touchY;
 
-                if(!TouchController.stickyThrust){
+                if(!TouchController.mStickyThrust){
                     moveListener.OnMoved(userX, userY);
                 } else {
                     Log.d(TAG, "X: " + Float.toString(userX - touchXzero) + " Y: " + Float.toString(userY - touchYzero) + " LastInput: " + Float.toString(lastYInput) + " UserY: " + Float.toString(userY) + " TouchYzero: " + Float.toString(touchYzero));

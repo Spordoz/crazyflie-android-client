@@ -94,9 +94,9 @@
     <string name="preferences_joystick_size_defaultValue">80</string>
     <string name="preferences_btn_title">Gamepad axis and button mapping</string>
     <string name="preferences_experimental_features_title">Experimental features</string>
-    <string name="preferences_use_full_assisted_mode_off">Use thrust control to control height</string>
-    <string name="preferences_use_full_assisted_mode_on">Use velocity control to control height</string>
-    <string name="preferences_use_full_assisted_mode_title">Full assisted mode</string>
+    <string name="preferences_use_full_assisted_mode_off">Do not use command based flight control</string>
+    <string name="preferences_use_full_assisted_mode_on">Use command based flight control</string>
+    <string name="preferences_use_full_assisted_mode_title">Command based flight control</string>
     <string name="preferences_enable_takeoff_off">Do not perform takeoff sequence</string>
     <string name="preferences_enable_takeoff_on">perform takeoff sequence</string>
     <string name="preferences_enable_takeoff_title">Takeoff on assist mode enabling</string>

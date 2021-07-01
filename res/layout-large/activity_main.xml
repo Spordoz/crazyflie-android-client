@@ -189,4 +189,118 @@
         android:layout_toRightOf="@+id/console_scrollView"
         android:layout_toEndOf="@+id/console_scrollView"/>
 
+    <ImageButton
+        android:id="@+id/button_assistMode"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/imageButton_connect"
+        android:layout_marginStart="174dp"
+        android:layout_marginLeft="174dp"
+        android:layout_marginTop="39dp"
+        android:layout_toEndOf="@+id/button_buzzerSound"
+        android:layout_toRightOf="@+id/button_buzzerSound"
+        android:background="@drawable/custom_button_action"
+        android:onClick="enableAltHoldMode"
+        android:src="@android:drawable/ic_menu_compass" />
+
+    <ImageButton
+        android:id="@+id/hoverUp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_above="@+id/yawLeft"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toEndOf="@+id/yawLeft"
+        android:layout_toRightOf="@+id/yawLeft"
+        android:src="@android:drawable/arrow_up_float" />
+
+    <ImageButton
+        android:id="@+id/hoverDown"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignTop="@+id/yawLeft"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="75dp"
+        android:layout_toEndOf="@+id/yawLeft"
+        android:layout_toRightOf="@+id/yawLeft"
+        android:src="@android:drawable/arrow_down_float" />
+
+    <ImageButton
+        android:id="@+id/yawRight"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignBottom="@+id/yawLeft"
+        android:layout_marginStart="80dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/yawLeft"
+        android:layout_toRightOf="@+id/yawLeft"
+        android:rotation="-90"
+        android:src="@android:drawable/arrow_down_float" />
+
+    <ImageButton
+        android:id="@+id/yawLeft"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginBottom="90dp"
+        android:rotation="90"
+        android:src="@android:drawable/arrow_down_float" />
+
+    <Button
+        android:id="@+id/takeoff"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_above="@+id/joystick_left"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="35dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginBottom="18dp"
+        android:text="Take off"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="20sp"
+        android:onClick="takeoff"/>
+
+
+    <Button
+        android:id="@+id/kill"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:layout_above="@+id/joystick_left"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="18dp"
+        android:layout_toEndOf="@+id/takeoff"
+        android:layout_toRightOf="@+id/takeoff"
+        android:text="Kill"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="30sp"
+        android:onClick="kill"/>
+
+    <Button
+        android:id="@+id/land"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_above="@+id/joystick_left"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="18dp"
+        android:layout_toEndOf="@+id/kill"
+        android:layout_toRightOf="@+id/kill"
+        android:autoSizeMaxTextSize="20sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeTextType="uniform"
+        android:onClick="land"
+        android:text="Land" />
+
+
 </RelativeLayout>

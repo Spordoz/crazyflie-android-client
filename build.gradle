@@ -72,4 +72,5 @@ dependencies {
     implementation 'org.slf4j:slf4j-android:1.6.1-RC1'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.6.3'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }

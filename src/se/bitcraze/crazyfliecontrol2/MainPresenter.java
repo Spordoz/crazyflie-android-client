@@ -1,6 +1,7 @@
 package se.bitcraze.crazyfliecontrol2;
 
 import android.util.Log;
+import android.os.Handler;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,8 +30,6 @@ import se.bitcraze.crazyfliecontrol.controller.GyroscopeController;
 import se.bitcraze.crazyfliecontrol.controller.IController;
 import se.bitcraze.crazyfliecontrol.controller.TouchController;
 
-import static android.view.View.GONE;
-
 public class MainPresenter {
 
     private static final String LOG_TAG = "Crazyflie-MainPresenter";
@@ -54,6 +53,8 @@ public class MainPresenter {
     private int mCpuFlash = 0;
     private boolean isZrangerAvailable = false;
     private boolean heightHold = false;
+
+    final Handler handler = new Handler();
 
     private Thread mSendJoystickDataThread;
     private ConsoleListener mConsoleListener;
@@ -84,7 +85,7 @@ public class MainPresenter {
                 mainActivity.setConnectionButtonConnected();
             }
             GyroscopeController.setYawZero();
-            //TODO: set assist mode to false
+            touchEnableAltHoldMode(false);
         }
 
         @Override
@@ -98,7 +99,7 @@ public class MainPresenter {
                     checkForBuzzerDeck();
                     checkForNoOfRingEffects();
                     checkForZRanger();
-                    checkForController();
+                    checkForControllerOrCommandBasedControl(); //might be unnecessary here
                 }
             }
             mLogg = mCrazyflie.getLogg();
@@ -191,11 +192,13 @@ public class MainPresenter {
         mCrazyflie.getParam().requestParamUpdate("ring.neffect");
     }
 
-    private void checkForController(){
-        if(mainActivity.getController() instanceof GamepadController) {
+    public void checkForControllerOrCommandBasedControl(){
+        if(mainActivity.getController() instanceof GamepadController || mainActivity.getCommandBasedFlightEnabled()) {
             mainActivity.setActiveAssistButton(false);
+            mainActivity.setCommandBasedFlightModeUI(mainActivity.getCommandBasedFlightEnabled() && !(mainActivity.getController() instanceof GamepadController));
         } else {
             mainActivity.setActiveAssistButton(true);
+            mainActivity.setCommandBasedFlightModeUI(false);
         }
     }
 
@@ -312,11 +315,6 @@ public class MainPresenter {
         mainActivity.setLinkQualityText("N/A");
     }
 
-    public void setTakeoffBool(boolean bool){
-        if (mCrazyflie != null)
-            mCrazyflie.setParamValue("modes.takeoff", bool ? 1 : 0);
-    }
-
     public void enableAltHoldMode(boolean hover) {
         // For safety reasons, altHold mode is only supported when the Crazyradio and a game pad are used
         if (mCrazyflie != null && mCrazyflie.getDriver() instanceof RadioDriver && mainActivity.getController() instanceof GamepadController) {
@@ -343,10 +341,61 @@ public class MainPresenter {
         } else {
 //                Log.i(LOG_TAG, "flightmode.althold: getThrust(): " + mController.getThrustAbsolute());
             Log.d("debug", "modes.althold: " + hover);
-            if(mParamToc.getTocSize() > 0)
-                mCrazyflie.setParamValue("modes.althold", hover ? 1 : 0);
-            else
-                mCrazyflie.setParamValueBle("modes.althold", hover ? 1 : 0, VariableType.UINT8_T, true);
+            if(mCrazyflie != null) {
+                if (mParamToc.getTocSize() > 0)
+                    mCrazyflie.setParamValue("modes.althold", hover ? 1 : 0);
+                else
+                    mCrazyflie.setParamValueBle("modes.althold", hover ? 1 : 0, VariableType.UINT8_T, true);
+            }
+        }
+    }
+
+    public void sendCommandFlightModeCommand(String commandName){
+        if(mCrazyflie != null && (commandName != null && !commandName.trim().isEmpty())){
+            if(mParamToc.getTocSize() > 0){
+                switch (commandName) {
+                    case "kill":
+                        mCrazyflie.setParamValue("modes.althold", 0);
+                        TouchController.mHover = false;
+                        break;
+                    case "takeoff":
+                        mCrazyflie.setParamValue("modes.takeoff", 1);
+                        mCrazyflie.setParamValue("modes.althold", 1);
+                        TouchController.mHover = true;
+                        break;
+                    case "land":
+                        mCrazyflie.setParamValue("modes.landing", 1);
+                        break;
+                    default:
+                        Log.d(LOG_TAG, "invalid Command Flight Mode command");
+                        break;
+                }
+            } else {
+                switch (commandName) {
+                    case "kill":
+                        mCrazyflie.setParamValueBle("modes.althold", 0, VariableType.UINT8_T, true);
+                        TouchController.mHover = false;
+                        break;
+                    case "takeoff":
+                        mCrazyflie.setParamValueBle("modes.takeoff", 1, VariableType.UINT8_T, false);
+                        TouchController.mHover = true;
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCrazyflie.setParamValueBle("modes.althold", 1, VariableType.UINT8_T, true);
+                            }
+                        }, 200);
+
+                        break;
+                    case "land":
+                        mCrazyflie.setParamValueBle("modes.landing", 1, VariableType.UINT8_T, false);
+                        break;
+                    default:
+                        Log.d(LOG_TAG, "invalid Command Flight Mode command");
+                        break;
+                }
+            }
+
         }
     }
 
@@ -354,7 +403,6 @@ public class MainPresenter {
     public void runAltAction(String action) {
         Log.i("debug", "runAltAction: " + action);
         if (mCrazyflie != null) {
-            Log.i("debug", "check \n");
             if ("ring.headlightEnable".equalsIgnoreCase(action)) {
                 // Toggle LED ring headlight
                 mHeadlightToggle = !mHeadlightToggle;
@@ -372,14 +420,16 @@ public class MainPresenter {
                 Log.i(LOG_TAG, "Sound effect: " + split[1]);
                 mCrazyflie.setParamValue(split[0], mSoundToggle ? Integer.parseInt(split[1]) : 0);
                 mSoundToggle = !mSoundToggle;
-            }
-            else if ("althold.enable".equalsIgnoreCase(action)){
-                Log.d("debug", "flightmode.althold: altAction functioncall \n");
+            } else if ("modes.althold".equalsIgnoreCase(action)){
+                //Log.d("debug", "flightmode.althold: altAction functioncall \n");
                 if(mHeightHoldToggle != TouchController.mHover)
                     mHeightHoldToggle = TouchController.mHover;
                 mHeightHoldToggle = !mHeightHoldToggle;
                 touchEnableAltHoldMode(mHeightHoldToggle);
                 TouchController.mHover = mHeightHoldToggle;
+            } else if ("modes.takeoff".equalsIgnoreCase(action)){
+                touchEnableAltHoldMode(true);
+                TouchController.mHover = true;
             }
         } else {
             Log.d(LOG_TAG, "runAltAction - crazyflie is null");

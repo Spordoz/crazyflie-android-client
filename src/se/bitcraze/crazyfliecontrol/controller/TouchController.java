@@ -50,10 +50,12 @@ public class TouchController extends AbstractController {
     protected JoystickView mJoystickViewRight;
 
     private float lastThrust = 0;
-    private float lastInput = 0;
 
-    public static boolean stickyThrust = false;
+    public static float mAssistModeHoverThrust = 0.0f;
+    public static float mAssistModeHoverYaw = 0.0f;
+    public static boolean mStickyThrust = false;
     public static boolean mHover = false;
+    public static boolean mFullAssistMode = false;
 
     public float getThrust() {
         float thrust =  ((mControls.getMode() == 1 || mControls.getMode() == 3) ? mControls.getRightAnalog_Y() : mControls.getLeftAnalog_Y());
@@ -64,7 +66,7 @@ public class TouchController extends AbstractController {
                 minThrust = minThrust * -1;
             }
             return minThrust + (thrust * mControls.getThrustFactor());
-        } else if(!stickyThrust) {
+        } else if(!mStickyThrust) {
             if (thrust > mControls.getDeadzone()) {
                 Log.d("JoystickView", "Thrust: " + thrust);
                 //thrust -= mControls.getDeadzone();
@@ -78,7 +80,6 @@ public class TouchController extends AbstractController {
             if (Math.abs(thrust) > mControls.getDeadzone()) {
                 thrust -= mControls.getDeadzone();
                 Log.d("JoystickView", "thrust before: " + Float.toString(thrust));
-                lastInput = thrust;
                 if (mControls.getMinThrust() + (thrust * mControls.getThrustFactor()) > mControls.getMaxThrust()) {
                     lastThrust = mControls.getMaxThrust();
                     joystickView.capInput = true;
@@ -96,14 +97,20 @@ public class TouchController extends AbstractController {
             return lastThrust;
         }
     }
+    public float getAssistModeThrust() {
+        return mControls.getMinThrust() + (mAssistModeHoverThrust * mControls.getThrustFactor());
+    }
 
     public float getThrustAbsolute() {
-        float thrust = getThrust();
+        float thrust;
+        if(!mFullAssistMode)
+            thrust = getThrust();
+        else
+            thrust = getAssistModeThrust();
         float absThrust = thrust/100 * MAX_THRUST;
 
         //Hacky Hover Mode
         if(isHover()) {
-            Log.d("debug", "sending hover values: " + (32767 + ((absThrust/65535)*32767)));
             return 32767 + ((absThrust/65535)*32767);
         } else {
             if(thrust > 0) {
@@ -111,6 +118,15 @@ public class TouchController extends AbstractController {
             }
         }
         return 0;
+    }
+
+    public float getYaw() {
+        float yaw = 0;
+        if(!mFullAssistMode)
+            yaw = (mControls.getMode() == 1 || mControls.getMode() == 2) ? mControls.getLeftAnalog_X() : mControls.getRightAnalog_X();
+        else
+            yaw = mAssistModeHoverYaw;
+        return yaw * mControls.getYawFactor() * mControls.getDeadzone(yaw);
     }
 
     public boolean isHover() {
@@ -127,7 +143,7 @@ public class TouchController extends AbstractController {
     }
 
     private void updateAutoReturnMode() {
-        if(stickyThrust){
+        if(mStickyThrust){
             this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_NONE : JoystickView.AUTO_RETURN_CENTER);
         } else {
             this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_BOTTOM : JoystickView.AUTO_RETURN_CENTER);
@@ -201,7 +217,7 @@ public class TouchController extends AbstractController {
         @Override
         public void OnMoved(float pan, float tilt) {
             if (isLeftAnalogFullTravelThrust()) {
-                if(!stickyThrust){
+                if(!mStickyThrust){
                     tilt = (tilt + 1.0f) / 2.0f;
                 }
             }
@@ -212,7 +228,7 @@ public class TouchController extends AbstractController {
 
             updateFlightData();
 
-            if(stickyThrust){
+            if(mStickyThrust){
                 OnReleased();
             }
         }

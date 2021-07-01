@@ -50,7 +50,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -78,6 +77,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -101,6 +101,7 @@ public class MainActivity extends Activity {
 
     private IController mController;
     private GamepadController mGamepadController;
+    private TouchController mTouchController;
 
     private String mRadioChannelDefaultValue;
     private String mRadioDatarateDefaultValue;
@@ -119,6 +120,11 @@ public class MainActivity extends Activity {
     private ImageButton mAssistModeButton;
     private ImageButton mHoverUpButton;
     private ImageButton mHoverDownButton;
+    private ImageButton mYawRightButton;
+    private ImageButton mYawLeftButton;
+    private Button mTakeoffButton;
+    private Button mLandButton;
+    private Button mKillButton;
     private File mCacheDir;
 
     private TextView mTextView_battery;
@@ -149,7 +155,8 @@ public class MainActivity extends Activity {
         mJoystickViewLeft = (JoystickView) findViewById(R.id.joystick_left);
         mJoystickViewRight = (JoystickView) findViewById(R.id.joystick_right);
         mJoystickViewRight.setLeft(false);
-        mController = new TouchController(mControls, this, mJoystickViewLeft, mJoystickViewRight);
+        mTouchController = new TouchController(mControls, this, mJoystickViewLeft, mJoystickViewRight);
+        mController = mTouchController;
 
         //initialize gamepad controller
         mGamepadController = new GamepadController(mControls, this, mPreferences);
@@ -172,19 +179,24 @@ public class MainActivity extends Activity {
         mAssistModeButton = (ImageButton) findViewById(R.id.button_assistMode);
         mHoverUpButton = (ImageButton) findViewById(R.id.hoverUp);
         mHoverDownButton = (ImageButton) findViewById(R.id.hoverDown);
+        mYawRightButton = (ImageButton) findViewById(R.id.yawRight);
+        mYawLeftButton = (ImageButton) findViewById(R.id.yawLeft);
+        mTakeoffButton = (Button) findViewById(R.id.takeoff);
+        mLandButton = (Button) findViewById(R.id.land);
+        mKillButton = (Button) findViewById(R.id.kill);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(this.getPackageName()+".USB_PERMISSION");
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         registerReceiver(mUsbReceiver, filter);
+        setOnTouchListeners();
 
         initializeSounds();
 
         setCacheDir();
 
     }
-
 
 
     private void initializeSounds() {
@@ -386,7 +398,7 @@ public class MainActivity extends Activity {
         PreferencesActivity.setDefaultJoystickSize(this);
         GyroscopeController.useGyroYaw = mPreferences.getBoolean("pref_use_gyro_yaw_bool", false);
         GyroscopeController.onlyYawOnPressed = mPreferences.getBoolean("pref_use_gyro_yaw_on_press_bool", false);
-        TouchController.stickyThrust = mPreferences.getBoolean("pref_touch_thrust_sticky", false);
+        TouchController.mStickyThrust = mPreferences.getBoolean("pref_touch_thrust_sticky", false);
         mJoystickViewLeft.setPreferences(mPreferences);
         mJoystickViewRight.setPreferences(mPreferences);
         mControls.setControlConfig();
@@ -394,7 +406,6 @@ public class MainActivity extends Activity {
         resetInputMethod();
         checkScreenLock();
         checkConsole();
-        CheckAssistModusUI();
         //disable action buttons
         mRingEffectButton.setEnabled(false);
         mHeadlightButton.setEnabled(false);
@@ -402,10 +413,11 @@ public class MainActivity extends Activity {
         if (mPreferences.getBoolean(PreferencesActivity.KEY_PREF_IMMERSIVE_MODE_BOOL, false)) {
             setHideyBar();
         }
-        if(mPresenter != null){
-            mPresenter.setTakeoffBool(mPreferences.getBoolean(PreferencesActivity.KEY_PREF_TAKEOFF, false));
-        }
-
+        //if(mPresenter != null){
+        //    mPresenter.setTakeoffBool(mPreferences.getBoolean(PreferencesActivity.KEY_PREF_TAKEOFF, false));
+        //}
+        mPresenter.checkForControllerOrCommandBasedControl();
+        TouchController.mFullAssistMode = getCommandBasedFlightEnabled();
         //mJoystickViewLeft.requestLayout();
     }
 
@@ -586,7 +598,7 @@ public class MainActivity extends Activity {
                     mController = new GyroscopeController(mControls, this, mJoystickViewLeft, mJoystickViewRight);
                 } else {
                     // TODO: reuse existing touch controller?
-                    mController = new TouchController(mControls, this, mJoystickViewLeft, mJoystickViewRight);
+                    mController = mTouchController;
                 }
                 break;
             case 1:
@@ -649,17 +661,27 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void CheckAssistModusUI(){
-        boolean useAssistUI = mPreferences.getBoolean(PreferencesActivity.KEY_PREF_USE_FULL_ASSIST_BOOL, false);
+    public void setCommandBasedFlightModeUI(boolean useAssistUI){
+        //boolean useAssistUI = mPreferences.getBoolean(PreferencesActivity.KEY_PREF_USE_FULL_ASSIST_BOOL, false);
         if(useAssistUI) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     mHoverUpButton.setVisibility(View.VISIBLE);
                     mHoverDownButton.setVisibility(View.VISIBLE);
-                    mJoystickViewLeft.setVisibility(View.GONE);
+                    mYawRightButton.setVisibility(View.VISIBLE);
+                    mYawLeftButton.setVisibility(View.VISIBLE);
+                    mTakeoffButton.setVisibility(View.VISIBLE);
+                    mKillButton.setVisibility(View.VISIBLE);
+                    mLandButton.setVisibility(View.VISIBLE);
+                    mJoystickViewLeft.setVisibility(View.INVISIBLE);
                     mHoverUpButton.setEnabled(true);
                     mHoverDownButton.setEnabled(true);
+                    mYawRightButton.setEnabled(true);
+                    mYawLeftButton.setEnabled(true);
+                    mTakeoffButton.setEnabled(true);
+                    mKillButton.setEnabled(true);
+                    mLandButton.setEnabled(true);
                     mJoystickViewLeft.setEnabled(false);
 
                 }
@@ -670,9 +692,19 @@ public class MainActivity extends Activity {
                 public void run() {
                     mHoverUpButton.setVisibility(View.GONE);
                     mHoverDownButton.setVisibility(View.GONE);
+                    mYawRightButton.setVisibility(View.GONE);
+                    mYawLeftButton.setVisibility(View.GONE);
+                    mTakeoffButton.setVisibility(View.GONE);
+                    mKillButton.setVisibility(View.GONE);
+                    mLandButton.setVisibility(View.GONE);
                     mJoystickViewLeft.setVisibility(View.VISIBLE);
                     mHoverUpButton.setEnabled(false);
                     mHoverDownButton.setEnabled(false);
+                    mYawRightButton.setEnabled(false);
+                    mYawLeftButton.setEnabled(false);
+                    mTakeoffButton.setEnabled(false);
+                    mKillButton.setEnabled(false);
+                    mLandButton.setEnabled(false);
                     mJoystickViewLeft.setEnabled(true);
                 }
             });
@@ -699,30 +731,119 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void setOnTouchListeners() {
+        mHoverUpButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hoverUp(true);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    hoverUp(false);
+                }
+                return true;
+            }
+        });
+
+        mHoverDownButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    hoverDown(true);
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    hoverDown(false);
+                }
+                return true;
+            }
+        });
+
+        mYawRightButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    yawRight(true);
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    yawRight(false);
+                }
+                return true;
+            }
+        });
+
+        mYawLeftButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    yawLeft(true);
+                } else if (event.getAction() == MotionEvent.ACTION_UP){
+                    yawLeft(false);
+                }
+                return true;
+            }
+        });
+    }
+
     // extra method for onClick attribute in XML
-    public void hoverUp(View view){
+    public void hoverUp(boolean touch){
         if(mPresenter != null && mController instanceof TouchController) {
-            TouchController.mHover = true;
-
+            if(touch){
+                if(!TouchController.mHover) {
+                    TouchController.mHover = true;
+                    mPresenter.touchEnableAltHoldMode(true);
+                }
+                TouchController.mAssistModeHoverThrust = 0.5f;
+            } else {
+                TouchController.mAssistModeHoverThrust = 0.0f;
+            }
         }
     }
 
-    public void hoverDown(View view){
-        if(mPresenter != null) {
-
+    public void hoverDown(boolean touch){
+        if(mPresenter != null && mController instanceof TouchController) {
+            if(touch){
+                TouchController.mAssistModeHoverThrust = -0.5f;
+            } else {
+                TouchController.mAssistModeHoverThrust = 0.0f;
+            }
         }
     }
 
-    public void takeoff(){
+    public void yawRight(boolean touch){
+        if(mPresenter != null && mController instanceof TouchController) {
+            if(touch){
+                TouchController.mAssistModeHoverYaw = 0.5f;
+            } else {
+                TouchController.mAssistModeHoverYaw = 0.0f;
+            }
+        }
+    }
 
+    public void yawLeft(boolean touch){
+        if(mPresenter != null && mController instanceof TouchController) {
+            if(touch){
+                TouchController.mAssistModeHoverYaw = -0.5f;
+            } else {
+                TouchController.mAssistModeHoverYaw = 0.0f;
+            }
+        }
+    }
+
+    public void takeoff(View view){
+        mPresenter.sendCommandFlightModeCommand("takeoff");
+    }
+
+    public void land(View view){
+        mPresenter.sendCommandFlightModeCommand("land");
+    }
+
+    public void kill(View view){
+        mPresenter.sendCommandFlightModeCommand("kill");
     }
 
     // extra method for onClick attribute in XML
     public void enableAltHoldMode(View view){
         if(mPresenter != null) {
             Log.i("debug", "flightmode.althold: EnableAltHoldMode functioncall \n");
-            mPresenter.runAltAction("althold.enable");
-
+            mPresenter.runAltAction("modes.althold");
         }
     }
 
@@ -758,6 +879,8 @@ public class MainActivity extends Activity {
     public Controls getControls(){
         return mControls;
     }
+
+    public boolean getCommandBasedFlightEnabled(){return mPreferences.getBoolean(PreferencesActivity.KEY_PREF_USE_FULL_ASSIST_BOOL, false);}
 
     public static boolean isCrazyradioAvailable(Context context) {
         UsbManager usbManager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
