@@ -410,7 +410,6 @@ public class Crazyflie {
                 if(packet != null) {
                     //All-packet callbacks
                     //self.cf.packet_received.call(pk)
-                    Log.d("debug",packet.getPayload().toString());
 
                     checkForInitialPacketCallback(packet);
                     checkReceivedPackets(packet);
