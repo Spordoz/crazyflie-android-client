@@ -51,11 +51,11 @@ public class TouchController extends AbstractController {
 
     private float lastThrust = 0;
 
-    public static float mAssistModeHoverThrust = 0.0f;
-    public static float mAssistModeHoverYaw = 0.0f;
-    public static boolean mStickyThrust = false;
-    public static boolean mHover = false;
-    public static boolean mFullAssistMode = false;
+    public static float sAssistModeHoverThrust = 0.0f;
+    public static float sAssistModeHoverYaw = 0.0f;
+    public static boolean sStickyThrust = false;
+    public static boolean sHover = false;
+    public static boolean sFullAssistMode = false;
 
     public float getThrust() {
         float thrust =  ((mControls.getMode() == 1 || mControls.getMode() == 3) ? mControls.getRightAnalog_Y() : mControls.getLeftAnalog_Y());
@@ -66,7 +66,7 @@ public class TouchController extends AbstractController {
                 minThrust = minThrust * -1;
             }
             return minThrust + (thrust * mControls.getThrustFactor());
-        } else if(!mStickyThrust) {
+        } else if(!sStickyThrust) {
             if (thrust > mControls.getDeadzone()) {
                 Log.d("JoystickView", "Thrust: " + thrust);
                 //thrust -= mControls.getDeadzone();
@@ -98,12 +98,12 @@ public class TouchController extends AbstractController {
         }
     }
     public float getAssistModeThrust() {
-        return mControls.getMinThrust() + (mAssistModeHoverThrust * mControls.getThrustFactor());
+        return mControls.getMinThrust() + (sAssistModeHoverThrust * mControls.getThrustFactor());
     }
 
     public float getThrustAbsolute() {
         float thrust;
-        if(!mFullAssistMode)
+        if(!sFullAssistMode)
             thrust = getThrust();
         else
             thrust = getAssistModeThrust();
@@ -122,15 +122,15 @@ public class TouchController extends AbstractController {
 
     public float getYaw() {
         float yaw = 0;
-        if(!mFullAssistMode)
+        if(!sFullAssistMode)
             yaw = (mControls.getMode() == 1 || mControls.getMode() == 2) ? mControls.getLeftAnalog_X() : mControls.getRightAnalog_X();
         else
-            yaw = mAssistModeHoverYaw;
+            yaw = sAssistModeHoverYaw;
         return yaw * mControls.getYawFactor() * mControls.getDeadzone(yaw);
     }
 
     public boolean isHover() {
-        return this.mHover;
+        return this.sHover;
     }
 
     public TouchController(Controls controls, MainActivity activity, JoystickView joystickviewLeft, JoystickView joystickviewRight) {
@@ -143,7 +143,7 @@ public class TouchController extends AbstractController {
     }
 
     private void updateAutoReturnMode() {
-        if(mStickyThrust){
+        if(sStickyThrust){
             this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_NONE : JoystickView.AUTO_RETURN_CENTER);
         } else {
             this.mJoystickViewLeft.setAutoReturnMode(isLeftAnalogFullTravelThrust() ? JoystickView.AUTO_RETURN_BOTTOM : JoystickView.AUTO_RETURN_CENTER);
@@ -217,7 +217,7 @@ public class TouchController extends AbstractController {
         @Override
         public void OnMoved(float pan, float tilt) {
             if (isLeftAnalogFullTravelThrust()) {
-                if(!mStickyThrust){
+                if(!sStickyThrust){
                     tilt = (tilt + 1.0f) / 2.0f;
                 }
             }
@@ -228,7 +228,7 @@ public class TouchController extends AbstractController {
 
             updateFlightData();
 
-            if(mStickyThrust){
+            if(sStickyThrust){
                 OnReleased();
             }
         }

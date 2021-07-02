@@ -398,7 +398,7 @@ public class MainActivity extends Activity {
         PreferencesActivity.setDefaultJoystickSize(this);
         GyroscopeController.useGyroYaw = mPreferences.getBoolean("pref_use_gyro_yaw_bool", false);
         GyroscopeController.onlyYawOnPressed = mPreferences.getBoolean("pref_use_gyro_yaw_on_press_bool", false);
-        TouchController.mStickyThrust = mPreferences.getBoolean("pref_touch_thrust_sticky", false);
+        TouchController.sStickyThrust = mPreferences.getBoolean("pref_touch_thrust_sticky", false);
         mJoystickViewLeft.setPreferences(mPreferences);
         mJoystickViewRight.setPreferences(mPreferences);
         mControls.setControlConfig();
@@ -417,7 +417,7 @@ public class MainActivity extends Activity {
         //    mPresenter.setTakeoffBool(mPreferences.getBoolean(PreferencesActivity.KEY_PREF_TAKEOFF, false));
         //}
         mPresenter.checkForControllerOrCommandBasedControl();
-        TouchController.mFullAssistMode = getCommandBasedFlightEnabled();
+        TouchController.sFullAssistMode = getCommandBasedFlightEnabled();
         //mJoystickViewLeft.requestLayout();
     }
 
@@ -786,13 +786,13 @@ public class MainActivity extends Activity {
     public void hoverUp(boolean touch){
         if(mPresenter != null && mController instanceof TouchController) {
             if(touch){
-                if(!TouchController.mHover) {
-                    TouchController.mHover = true;
+                if(!TouchController.sHover) {
+                    TouchController.sHover = true;
                     mPresenter.touchEnableAltHoldMode(true);
                 }
-                TouchController.mAssistModeHoverThrust = 0.5f;
+                TouchController.sAssistModeHoverThrust = 0.5f;
             } else {
-                TouchController.mAssistModeHoverThrust = 0.0f;
+                TouchController.sAssistModeHoverThrust = 0.0f;
             }
         }
     }
@@ -800,9 +800,9 @@ public class MainActivity extends Activity {
     public void hoverDown(boolean touch){
         if(mPresenter != null && mController instanceof TouchController) {
             if(touch){
-                TouchController.mAssistModeHoverThrust = -0.5f;
+                TouchController.sAssistModeHoverThrust = -0.5f;
             } else {
-                TouchController.mAssistModeHoverThrust = 0.0f;
+                TouchController.sAssistModeHoverThrust = 0.0f;
             }
         }
     }
@@ -810,9 +810,9 @@ public class MainActivity extends Activity {
     public void yawRight(boolean touch){
         if(mPresenter != null && mController instanceof TouchController) {
             if(touch){
-                TouchController.mAssistModeHoverYaw = 0.5f;
+                TouchController.sAssistModeHoverYaw = 0.5f;
             } else {
-                TouchController.mAssistModeHoverYaw = 0.0f;
+                TouchController.sAssistModeHoverYaw = 0.0f;
             }
         }
     }
@@ -820,9 +820,9 @@ public class MainActivity extends Activity {
     public void yawLeft(boolean touch){
         if(mPresenter != null && mController instanceof TouchController) {
             if(touch){
-                TouchController.mAssistModeHoverYaw = -0.5f;
+                TouchController.sAssistModeHoverYaw = -0.5f;
             } else {
-                TouchController.mAssistModeHoverYaw = 0.0f;
+                TouchController.sAssistModeHoverYaw = 0.0f;
             }
         }
     }
@@ -843,7 +843,7 @@ public class MainActivity extends Activity {
     public void enableAltHoldMode(View view){
         if(mPresenter != null) {
             mPresenter.runAltAction("modes.althold");
-            if(TouchController.mHover){
+            if(TouchController.sHover){
                 mAssistModeButton.setText("Disable\n Assist Mode");
             }
             else {

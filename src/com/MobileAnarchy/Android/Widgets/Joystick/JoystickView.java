@@ -351,7 +351,7 @@ public class JoystickView extends View {
     }
 
     private void getZeroOnTouch (){
-        if(TouchController.mStickyThrust) {
+        if(TouchController.sStickyThrust) {
             if (firstTouch) {
                 Log.d(TAG, "first touch");
                 calcUserCoordinates();
@@ -371,7 +371,7 @@ public class JoystickView extends View {
             touchX = x - circleCenterX;
             float y = ev.getY(pointerIndex);
             touchY = y - circleCenterY;
-            if(TouchController.mStickyThrust){
+            if(TouchController.sStickyThrust){
                 getZeroOnTouch();
             }
 
@@ -398,7 +398,7 @@ public class JoystickView extends View {
                 this.reportX = touchX;
                 this.reportY = touchY;
 
-                if(!TouchController.mStickyThrust){
+                if(!TouchController.sStickyThrust){
                     moveListener.OnMoved(userX, userY);
                 } else {
                     Log.d(TAG, "X: " + Float.toString(userX - touchXzero) + " Y: " + Float.toString(userY - touchYzero) + " LastInput: " + Float.toString(lastYInput) + " UserY: " + Float.toString(userY) + " TouchYzero: " + Float.toString(touchYzero));

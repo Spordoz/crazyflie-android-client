@@ -325,7 +325,6 @@ public class MainPresenter {
                     ((GamepadController) mainActivity.getController()).setTargetHeight(AbstractController.INITIAL_TARGET_HEIGHT);
                 }
             } else {
-//                Log.i(LOG_TAG, "flightmode.althold: getThrust(): " + mController.getThrustAbsolute());
                 mCrazyflie.setParamValue("flightmode.althold", hover ? 1 : 0);
             }
         }
@@ -340,12 +339,9 @@ public class MainPresenter {
             }
         } else {
 //                Log.i(LOG_TAG, "flightmode.althold: getThrust(): " + mController.getThrustAbsolute());
-            Log.d("debug", "modes.althold: " + hover);
             if(mCrazyflie != null) {
-                if (mParamToc.getTocSize() > 0)
-                    mCrazyflie.setParamValue("modes.althold", hover ? 1 : 0);
-                else
-                    mCrazyflie.setParamValueBle("modes.althold", hover ? 1 : 0, VariableType.UINT8_T, true);
+                if (mParamToc.getTocSize() > 0) mCrazyflie.setParamValue("modes.althold", hover ? 1 : 0);
+                else mCrazyflie.setParamValueBle("modes.althold", hover ? 1 : 0, VariableType.UINT8_T, true);
             }
         }
     }
@@ -356,12 +352,12 @@ public class MainPresenter {
                 switch (commandName) {
                     case "kill":
                         mCrazyflie.setParamValue("modes.althold", 0);
-                        TouchController.mHover = false;
+                        TouchController.sHover = false;
                         break;
                     case "takeoff":
                         mCrazyflie.setParamValue("modes.takeoff", 1);
                         mCrazyflie.setParamValue("modes.althold", 1);
-                        TouchController.mHover = true;
+                        TouchController.sHover = true;
                         break;
                     case "land":
                         mCrazyflie.setParamValue("modes.landing", 1);
@@ -374,11 +370,11 @@ public class MainPresenter {
                 switch (commandName) {
                     case "kill":
                         mCrazyflie.setParamValueBle("modes.althold", 0, VariableType.UINT8_T, true);
-                        TouchController.mHover = false;
+                        TouchController.sHover = false;
                         break;
                     case "takeoff":
                         mCrazyflie.setParamValueBle("modes.takeoff", 1, VariableType.UINT8_T, false);
-                        TouchController.mHover = true;
+                        TouchController.sHover = true;
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -422,14 +418,14 @@ public class MainPresenter {
                 mSoundToggle = !mSoundToggle;
             } else if ("modes.althold".equalsIgnoreCase(action)){
                 //Log.d("debug", "flightmode.althold: altAction functioncall \n");
-                if(mHeightHoldToggle != TouchController.mHover)
-                    mHeightHoldToggle = TouchController.mHover;
+                if(mHeightHoldToggle != TouchController.sHover)
+                    mHeightHoldToggle = TouchController.sHover;
                 mHeightHoldToggle = !mHeightHoldToggle;
                 touchEnableAltHoldMode(mHeightHoldToggle);
-                TouchController.mHover = mHeightHoldToggle;
+                TouchController.sHover = mHeightHoldToggle;
             } else if ("modes.takeoff".equalsIgnoreCase(action)){
                 touchEnableAltHoldMode(true);
-                TouchController.mHover = true;
+                TouchController.sHover = true;
             }
         } else {
             Log.d(LOG_TAG, "runAltAction - crazyflie is null");
