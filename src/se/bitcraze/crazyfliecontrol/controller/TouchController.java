@@ -68,10 +68,6 @@ public class TouchController extends AbstractController {
             return minThrust + (thrust * mControls.getThrustFactor());
         } else if(!sStickyThrust) {
             if (thrust > mControls.getDeadzone()) {
-                Log.d("JoystickView", "Thrust: " + thrust);
-                //thrust -= mControls.getDeadzone();
-                Log.d("JoystickView", "Thrust after: " + thrust);
-                Log.d("JoystickView", "Thrust final: " + (mControls.getMinThrust() + (thrust - 1 * mControls.getDeadzone())/(1 - mControls.getDeadzone()) * mControls.getThrustFactor()));
                 return (float) (mControls.getMinThrust() + (thrust - 1 * mControls.getDeadzone())/(1 - mControls.getDeadzone()) * mControls.getThrustFactor());
             } else {
                 return 0;
@@ -79,7 +75,6 @@ public class TouchController extends AbstractController {
         } else {
             if (Math.abs(thrust) > mControls.getDeadzone()) {
                 thrust -= mControls.getDeadzone();
-                Log.d("JoystickView", "thrust before: " + Float.toString(thrust));
                 if (mControls.getMinThrust() + (thrust * mControls.getThrustFactor()) > mControls.getMaxThrust()) {
                     lastThrust = mControls.getMaxThrust();
                     joystickView.capInput = true;
@@ -90,7 +85,6 @@ public class TouchController extends AbstractController {
                     return 0;
                 }
                 joystickView.capInput = false;
-                Log.d("JoystickView", "thrust: " + Float.toString(thrust));
                 lastThrust = mControls.getMinThrust() + (thrust * mControls.getThrustFactor());
                 return lastThrust;
             }
