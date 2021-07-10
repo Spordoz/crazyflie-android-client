@@ -277,9 +277,9 @@ public class Param {
      * @param completeName
      * @param value
      * @param cType
+     * @param coreParameter
      */
 
-    //FIXME: hacky way to set parameter if you know the id of said parameter
     public void setValueBle(String completeName, Number value, VariableType cType, Boolean coreParameter){
         byte[] groupBytes, nameBytes;
         Header header = new Header(MISC_CHANNEL, CrtpPort.PARAMETERS);
@@ -287,7 +287,7 @@ public class Param {
         groupBytes = split[0].getBytes();
         nameBytes = split[1].getBytes();
         byte bytevalue = value.byteValue();
-        ByteBuffer bb = ByteBuffer.allocate(1 + groupBytes.length + nameBytes.length + 4);
+        ByteBuffer bb = ByteBuffer.allocate(1 + groupBytes.length + nameBytes.length + 3 + cType.getSize());
         bb.put((byte) 0x00);
         for (int i = 0; i < groupBytes.length; i++){
             bb.put(groupBytes[i]);
@@ -302,7 +302,6 @@ public class Param {
         bb.put(bytevalue);
         CrtpPacket packet = new CrtpPacket(header.getByte(), bb.array());
         mPut.addParamRequest(packet);
-
     }
 
     /**
